@@ -35,3 +35,4 @@ jobs:
       env:
         PYTHONPATH: /home/runner/work/accord.py/accord.py/src/:/home/runner/work/accord.py/accord.py/test/
         TOKEN: ${{ secrets.TOKEN }}
+        GUILD_ID: ${{ secrets.GUILD_ID }}
