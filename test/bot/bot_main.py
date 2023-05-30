@@ -2,7 +2,7 @@ import json
 import os
 
 from discord import Client, Intents, Object, Interaction
-from discord.app_commands import CommandTree
+from discord.app_commands import CommandTree, Transform, Transformer
 
 
 class Bot(Client):
@@ -53,6 +53,16 @@ async def ephemeral(interaction: Interaction):
 @bot.tree.command(name="repeat")
 async def repeat(interaction: Interaction, to_repeat: str, times: int = 2):
     await interaction.response.send_message(f"{to_repeat}\n" * times)
+
+
+class Reverser(Transformer):
+    async def transform(self, _: Interaction, string: str) -> str:
+        return string[::-1]
+
+
+@bot.tree.command(name="reverse")
+async def reverse(interaction: Interaction, to_reverse: Transform[str, Reverser]):
+    await interaction.response.send_message(to_reverse)
 
 
 if __name__ == '__main__':
