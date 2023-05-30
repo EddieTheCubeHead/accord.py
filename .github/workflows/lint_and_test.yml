@@ -33,4 +33,4 @@ jobs:
       run: |
         pytest test
       env:
-        PYTHONPATH: /home/runner/work/accord.py/accord.py/src/, /home/runner/work/accord.py/accord.py/test/
+        PYTHONPATH: /home/runner/work/accord.py/accord.py/src/:/home/runner/work/accord.py/accord.py/test/
