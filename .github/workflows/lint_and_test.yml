@@ -34,3 +34,4 @@ jobs:
         pytest test
       env:
         PYTHONPATH: /home/runner/work/accord.py/accord.py/src/:/home/runner/work/accord.py/accord.py/test/
+        TOKEN: ${{ secrets.TOKEN }}
