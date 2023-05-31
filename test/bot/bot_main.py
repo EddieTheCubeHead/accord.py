@@ -3,6 +3,7 @@ import os
 
 from discord import Client, Intents, Object, Interaction
 from discord.app_commands import CommandTree, Transform, Transformer
+from discord.ui import View, Button
 
 
 class Bot(Client):
@@ -63,6 +64,28 @@ class Reverser(Transformer):
 @bot.tree.command(name="reverse")
 async def reverse(interaction: Interaction, to_reverse: Transform[str, Reverser]):
     await interaction.response.send_message(to_reverse)
+    
+    
+class GreeterButton(Button):
+    
+    def __init__(self):
+        super().__init__()
+        self.label = "Greet"
+        
+    async def callback(self, interaction: Interaction):
+        await interaction.response.send_message("Hello there!", ephemeral=True)
+    
+    
+class ButtonView(View):
+    
+    def __init__(self):
+        super().__init__()
+        self.add_item(GreeterButton())
+    
+    
+@bot.tree.command(name="button")
+async def button(interaction: Interaction):
+    await interaction.response.send_message("Test button:", view=ButtonView())
 
 
 if __name__ == '__main__':
