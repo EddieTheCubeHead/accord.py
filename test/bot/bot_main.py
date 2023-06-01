@@ -3,7 +3,7 @@ import os
 
 from discord import Client, Intents, Object, Interaction
 from discord.app_commands import CommandTree, Transform, Transformer
-from discord.ui import View, Button
+from discord.ui import View, Button, Modal, TextInput
 
 
 class Bot(Client):
@@ -76,7 +76,7 @@ class GreeterButton(Button):
         await interaction.response.send_message("Hello there!", ephemeral=True)
     
     
-class ButtonView(View):
+class GreeterButtonView(View):
     
     def __init__(self):
         super().__init__()
@@ -85,7 +85,47 @@ class ButtonView(View):
     
 @bot.tree.command(name="button")
 async def button(interaction: Interaction):
-    await interaction.response.send_message("Test button:", view=ButtonView())
+    await interaction.response.send_message("Test button:", view=GreeterButtonView())
+
+
+class NumberButton(Button):
+
+    def __init__(self, number: int):
+        super().__init__()
+        self.label = f"{number}"
+        self._number = number
+
+    async def callback(self, interaction: Interaction):
+        await interaction.response.send_message(f"Button {self._number} clicked", ephemeral=True)
+
+class NumberButtonView(View):
+
+    def __init__(self, button_count: int):
+        super().__init__()
+        for number in range(1, button_count + 1):
+            self.add_item(NumberButton(number))
+    
+    
+@bot.tree.command(name="buttons")
+async def buttons(interaction: Interaction, count: int = 2):
+    await interaction.response.send_message("Click numbers:", view=NumberButtonView(count)) 
+    
+    
+class ExampleModal(Modal, title="Example modal"):
+
+    def __init__(self, raw_response: bool = False):
+        super().__init__()
+        self._raw_response = raw_response
+
+    response = TextInput(label="Say something", placeholder="text")
+
+    async def on_submit(self, interaction: Interaction):
+        await interaction.response.send_message(self.response if self._raw_response else self.response.value)
+    
+    
+@bot.tree.command(name="modal")
+async def modal(interaction: Interaction, raw_response: bool = False):
+    await interaction.response.send_modal(ExampleModal(raw_response))
 
 
 if __name__ == '__main__':

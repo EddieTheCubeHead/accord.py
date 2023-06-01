@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import inspect
 import threading
+import typing
 from enum import Enum
 from unittest.mock import AsyncMock
 
@@ -36,33 +37,67 @@ class DiscordObject:
 
 class Response:
 
-    def __init__(self, engine: Engine, message: Message, text: str, *, ephemeral=False,
-                 view: discord.ui.View = None):
+    def __init__(self, engine: Engine, message: Message, content: str | None, *, ephemeral: bool = False,
+                 view: discord.ui.View = None, modal: discord.ui.Modal = None):
         self._engine = engine
         self._message = message
-        self.text = text
+        self.content = str(content)
         self.ephemeral = ephemeral
         self.view = view
+        self.modal = modal
+        
+    @property
+    def button(self) -> discord.ui.Button | None:
+        return self.get_button()
 
-    async def activate_button(self, button: str | int):
+    async def activate_button(self, button: str | int = 0):
+        to_activate = self.get_button(button)
+        if to_activate is None:
+            return
+        interaction = create_component_interaction(self._engine, 3, self._message, to_activate.custom_id)
+        self._engine.client._connection._view_store.dispatch_view(2, to_activate.custom_id, interaction)
+        await asyncio.sleep(0)
+        
+    def get_button(self, button: str | int = 0) -> discord.ui.Button | None:
         button_name: str | None = button if type(button) == str else None
         button_index: int | None = button if type(button) == int else None
         all_items = self.view.children
-        activated_button: discord.ui.Button | None = None
+        found_button: discord.ui.Button | None = None
         for index, item in enumerate(all_items):
             if item.type.name != "button":
                 continue
             if item.label == button_name or index == button_index:
-                activated_button = item
-        if activated_button is None:
-            return
-        interaction = create_component_interaction(self._engine, 
-                                                   self._message,
-                                                   activated_button.custom_id)
-        interaction.id = self._message.interaction.id
-        self._engine._client._connection._view_store.dispatch_view(2, activated_button.custom_id, interaction)
+                found_button = item
+                break
+        return found_button
+    
+    def modal_input(self, modal_field: str, value: typing.Any) -> Response:
+        field = getattr(self.modal, modal_field)
+        if field is None:
+            return self
+
+        field._value = value
+        for inner_field in self.modal.children:
+            if field.custom_id == inner_field.custom_id:
+                inner_field._value = value
+                break
+        return self
+    
+    async def submit_modal(self):
+        modal = self.modal
+        interaction = create_component_interaction(self._engine, 5, self._message, modal.custom_id)
+        components = _build_components(modal)
+        self._engine.client._connection._view_store.dispatch_modal(modal.custom_id, interaction, components)
         await asyncio.sleep(0)
-            
+        
+
+def _build_components(modal: discord.ui.Modal) -> list[dict[typing.Any, typing.Any]]:
+    child_list = []
+    for child in modal.children:
+        child_list.append({"value": child.value, "custom_id": child.custom_id, "type": child.type.value})
+    components = {"type": 1, "components": child_list}
+    return [components]
+                
     
 class ResponseCatcher:
     
@@ -92,7 +127,12 @@ class ResponseCatcher:
             view.timeout = 15 * 60.0
 
         entity_id = self._parent.id if self._parent.type is discord.enums.InteractionType.application_command else None
-        self._engine._client._connection.store_view(view, entity_id)
+        self._engine.client._connection.store_view(view, entity_id)
+        
+    def send_modal(self, modal: discord.ui.Modal):
+        response = Response(self._engine, self._message, None, modal=modal)
+        self._engine.all_responses.append(response)
+        self._engine.client._connection.store_view(modal)
 
 
 class Guild(DiscordObject):
@@ -136,9 +176,9 @@ def create_command_interaction(engine: Engine, guild: Guild, member: Member, tex
     return mock_interaction
 
 
-def create_component_interaction(engine: Engine, message: Message, component_id: str) -> discord.Interaction:
+def create_component_interaction(engine: Engine, type: int, message: Message, component_id: str) -> discord.Interaction:
     mock_interaction = _create_interaction_base(engine, message.author, message.text_channel, message)
-    _build_component_interaction_data(mock_interaction, component_id)
+    _build_component_interaction_data(mock_interaction, type, component_id)
     return mock_interaction
 
 
@@ -164,7 +204,7 @@ def _build_command_interaction_data(interaction: discord.Interaction, guild: Gui
     interaction.data = {"type": 1, "name": interaction.command.name, "guild_id": guild.id, "options": options}
     
     
-def _build_component_interaction_data(interaction: discord.Interaction, custom_id: str):
+def _build_component_interaction_data(interaction: discord.Interaction, type: int, custom_id: str):
     interaction.data = {"type": 3, "custom_id": custom_id}
     
 
@@ -184,7 +224,7 @@ def _build_options(signature: inspect.Signature, *args, **kwargs):
 class Engine:
 
     def __init__(self, client: discord.Client, command_tree: discord.app_commands.CommandTree):
-        self._client = client
+        self.client = client
         self.command_tree = command_tree
         self.all_responses: list[Response] = []
 
@@ -226,13 +266,13 @@ class Engine:
     async def app_command(self, command_name: str, *args, guild_id: int = None, member_id: int = None,
                           channel_id: int = None, **kwargs):
         event_loop = asyncio.get_running_loop()
-        self._client.loop = event_loop
+        self.client.loop = event_loop
         guild = self.guilds[guild_id] if guild_id is not None else self.guild
         member = self.members[member_id] if member_id is not None else self.member
         text_channel = self.text_channels[channel_id] if channel_id is not None else self.text_channel
         interaction = create_command_interaction(self, guild, member, text_channel, command_name, *args, **kwargs)
         self.command_tree._from_interaction(interaction)
-        self._client._connection.dispatch('interaction', interaction)
+        self.client._connection.dispatch('interaction', interaction)
         await asyncio.sleep(0)
 
     def get_response(self, index: int) -> Response:
