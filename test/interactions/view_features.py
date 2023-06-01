@@ -2,7 +2,7 @@ import discord.ui
 import pytest
 
 
-class TestButtons:
+class ButtonFeatures:
     
     @pytest.mark.asyncio
     async def should_track_button_clicks(self, accord_engine):
@@ -42,7 +42,7 @@ class TestButtons:
         assert accord_engine.response.get_button(2).label == "3"
         
 
-class TestModals:
+class ModalFeatures:
     
     @pytest.mark.asyncio
     async def should_see_response_modal_title(self, accord_engine):

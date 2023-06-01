@@ -1,7 +1,7 @@
 import pytest
 
 
-class TestBasicAppCommands:
+class BasicAppCommandFeatures:
 
     @pytest.mark.asyncio
     async def should_see_command_response_text(self, accord_engine):
