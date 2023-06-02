@@ -24,7 +24,10 @@ class DiscordObject:
 
 
 class Guild(DiscordObject):
-    pass
+    
+    def __init__(self):
+        super().__init__()
+        self.name = f"Guild {self.id}"
 
 
 class User(DiscordObject):

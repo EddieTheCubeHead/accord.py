@@ -1,5 +1,6 @@
 from unittest.mock import AsyncMock
 
+
 import accord
 
 
@@ -14,3 +15,10 @@ class StartupRunMethodsFeatures:
         # noinspection PyTypeChecker
         sync_function: AsyncMock = accord_engine.command_tree.sync
         assert sync_function.await_args[1]["guild"].id == accord.guild.id
+        
+
+# noinspection PyMethodMayBeStatic
+class StartupProvideStateFeatures:
+    
+    async def should_provide_mocked_guilds_on_startup_if_intent_requested(self, accord_engine: accord.Engine):
+        assert accord_engine.client.guilds[0].name == f"Guild {accord.guild.id}"
