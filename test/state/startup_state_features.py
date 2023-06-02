@@ -24,8 +24,7 @@ class StartupProvideStateFeatures:
     
     async def should_provide_guilds_on_startup_if_intent_requested(self, accord_engine: accord.Engine):
         assert accord_engine.client.guilds[0].name == f"Guild {accord.guild.id}"
-        
-    @pytest.mark.wip
+
     async def should_not_provide_guild_on_startup_if_intent_not_present(self):
         intents = discord.Intents.none()
         # We cannot do global import of bot due to monkey patching guild id being required
