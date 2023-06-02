@@ -33,3 +33,6 @@ class StartupProvideStateFeatures:
         
         assert len(accord_engine.client.guilds) == 0
         
+    async def should_provide_bot_user_data_on_startup(self, accord_engine: accord.Engine):
+        assert accord_engine.client.user.id == accord.client_user.id
+        assert accord_engine.client.user.name == accord.client_user.name

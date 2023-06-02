@@ -17,6 +17,7 @@ guilds: dict[int, discord_objects.Guild] = {guild.id: guild}
 default_guild_id = guild.id
 
 user = discord_objects.User()
+client_user = discord_objects.User("Test client")
 users: dict[int, discord_objects.User] = {user.id: user}
 default_user_id = user.id
 
@@ -206,10 +207,14 @@ async def create_engine(client: discord.Client, command_tree: discord.app_comman
 # The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
 # noinspection PyProtectedMember
 def _insert_objects(client: discord.Client):
+    discord_client_user = discord.ClientUser(state=client._connection, data=client_user.as_dict())
+    client._connection.user = discord_client_user
+    # Funnily enough this is ignored in the discord.py source code we're imitating as well
+    # noinspection PyTypeChecker
+    client._connection._users[discord_client_user.id] = discord_client_user
     if client.intents.guilds:
         for guild_data in guilds.values():
-            guild_dict = {"id": guild_data.id, "name": guild_data.name}
-            client._connection._add_guild_from_data(guild_dict)
+            client._connection._add_guild_from_data(guild_data.as_dict())
 
 
 # The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import threading
+import typing
 
 import discord
 
@@ -25,13 +26,31 @@ class DiscordObject:
 
 class Guild(DiscordObject):
     
-    def __init__(self):
+    def __init__(self, name: str = None):
         super().__init__()
-        self.name = f"Guild {self.id}"
+        self.name = name if name is not None else f"Guild {self.id}"
+        
+    def as_dict(self) -> dict[str, typing.Any]:
+        return {
+            "id": self.id,
+            "name": self.name
+        }
 
 
 class User(DiscordObject):
-    pass
+    
+    def __init__(self, name: str = None, avatar: str = None):
+        super().__init__()
+        self.name = name if name is not None else f"User {self.id}"
+        self.avatar = avatar if avatar is not None else f"User {self.id} avatar"
+        
+    def as_dict(self) -> dict[str, typing.Any]:
+        return {
+            "id": self.id,
+            "username": self.name,
+            "discriminator": self.id,
+            "avatar": self.avatar
+        }
 
 
 class Member(DiscordObject):
