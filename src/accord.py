@@ -6,6 +6,8 @@ import typing
 from enum import Enum
 from unittest.mock import AsyncMock
 
+# discord.py wants to be listed as discord.py in requirements, but also wants to be imported as discord
+# noinspection PyPackageRequirements
 import discord
 
 import discord_objects
@@ -33,6 +35,8 @@ class InteractionType(Enum):
     ModalSubmit = 5
 
 
+# The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
+# noinspection PyProtectedMember
 class Response:
 
     def __init__(self, engine: Engine, message: discord_objects.Message, content: str | None, *, 
@@ -62,7 +66,7 @@ class Response:
         all_items = self.view.children
         found_button: discord.ui.Button | None = None
         for index, item in enumerate(all_items):
-            if item.type.name != "button":
+            if item.type != discord.ComponentType.button or not isinstance(item, discord.ui.Button):
                 continue
             if item.label == button_name or index == button_index:
                 found_button = item
@@ -76,7 +80,7 @@ class Response:
 
         field._value = value
         for inner_field in self.modal.children:
-            if field.custom_id == inner_field.custom_id:
+            if isinstance(inner_field, discord.ui.TextInput) and field.custom_id == inner_field.custom_id:
                 inner_field._value = value
                 break
         return self
@@ -92,7 +96,8 @@ class Response:
 def _build_components(modal: discord.ui.Modal) -> list[dict[typing.Any, typing.Any]]:
     child_list = []
     for child in modal.children:
-        child_list.append({"value": child.value, "custom_id": child.custom_id, "type": child.type.value})
+        if isinstance(child, discord.ui.TextInput):
+            child_list.append({"value": child.value, "custom_id": child.custom_id, "type": child.type.value})
     components = {"type": 1, "components": child_list}
     return [components]
                 
@@ -176,7 +181,6 @@ def _build_component_interaction_data(interaction: discord.Interaction, type: in
     interaction.data = {"type": 3, "custom_id": custom_id}
     
 
-
 def _build_options(signature: inspect.Signature, *args, **kwargs):
     options = []
     expected = list(signature.parameters.values())[1:]
@@ -187,6 +191,8 @@ def _build_options(signature: inspect.Signature, *args, **kwargs):
     return options
 
 
+# The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
+# noinspection PyProtectedMember
 async def create_engine(client: discord.Client, command_tree: discord.app_commands.CommandTree) -> Engine:
     engine = Engine(client, command_tree)
     await engine.client._async_setup_hook()
@@ -212,7 +218,6 @@ class Engine:
 
     async def app_command(self, command_name: str, *args, guild_id: int = None, member_id: int = None,
                           channel_id: int = None, **kwargs):
-        await self.client._async_setup_hook()
         command_guild = guilds[guild_id] if guild_id is not None else guild
         command_issuer = members[member_id] if member_id is not None else member
         command_channel = text_channels[channel_id] if channel_id is not None else text_channel

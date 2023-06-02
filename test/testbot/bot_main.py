@@ -1,8 +1,12 @@
 import json
 import os
 
+# discord.py wants to be listed as discord.py in requirements, but also wants to be imported as discord
+# noinspection PyPackageRequirements
 from discord import Client, Intents, Object, Interaction
+# noinspection PyPackageRequirements
 from discord.app_commands import CommandTree, Transform, Transformer
+# noinspection PyPackageRequirements
 from discord.ui import View, Button, Modal, TextInput
 
 

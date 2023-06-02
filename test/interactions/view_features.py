@@ -1,4 +1,6 @@
-import discord.ui
+# discord.py wants to be listed as discord.py in requirements, but also wants to be imported as discord
+# noinspection PyPackageRequirements
+import discord
 
 import accord
 
@@ -49,7 +51,9 @@ class ModalFeatures:
         
     async def should_see_response_modal_fields(self, accord_engine: accord.Engine):
         await accord_engine.app_command("modal")
-        
+
+        # Discord.py adds fields as properties dynamically. modal.response is available
+        # noinspection PyUnresolvedReferences
         assert accord_engine.response.modal.response.label == "Say something"
         
     async def should_support_submitting_modals(self, accord_engine: accord.Engine):
