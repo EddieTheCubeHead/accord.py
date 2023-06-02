@@ -206,9 +206,10 @@ async def create_engine(client: discord.Client, command_tree: discord.app_comman
 # The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
 # noinspection PyProtectedMember
 def _insert_objects(client: discord.Client):
-    for guild_data in guilds.values():
-        guild_dict = {"id": guild_data.id, "name": guild_data.name}
-        client._connection._add_guild_from_data(guild_dict)
+    if client.intents.guilds:
+        for guild_data in guilds.values():
+            guild_dict = {"id": guild_data.id, "name": guild_data.name}
+            client._connection._add_guild_from_data(guild_dict)
 
 
 # The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
