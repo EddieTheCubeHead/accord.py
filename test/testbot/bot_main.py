@@ -57,7 +57,18 @@ async def ephemeral(interaction: Interaction):
     
 @bot.tree.command(name="guild")
 async def guild(interaction: Interaction):
-    await interaction.response.send_message(f"Guild id: {interaction.guild.id}")
+    await interaction.response.send_message(f"Guild name: {interaction.guild.name}")
+    
+    
+@bot.tree.command(name="channel")
+async def channel(interaction: Interaction):
+    await interaction.response.send_message(f"Channel name: {interaction.channel.name}")
+    
+
+@bot.tree.command(name="channel-guild")
+async def channel_guild(interaction: Interaction):
+    content = f"Channel name: {interaction.channel.name}\nGuild name: {interaction.guild.name}"
+    await interaction.response.send_message(content)
 
 
 @bot.tree.command(name="repeat")

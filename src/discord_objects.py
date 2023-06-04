@@ -63,9 +63,10 @@ class Member(DiscordObject):
 
 class TextChannel(DiscordObject):
 
-    def __init__(self, guild: Guild):
+    def __init__(self, guild: Guild, name: str = None):
         super().__init__()
         self.guild = guild
+        self.name = name if name is not None else f"Text channel {self.id}"
 
 
 class Message(DiscordObject):

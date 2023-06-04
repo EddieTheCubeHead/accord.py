@@ -29,8 +29,12 @@ text_channels: dict[(int, int), discord_objects.TextChannel] = {text_channel.id:
 default_text_channel_ids: dict[int, int] = {guild.id: text_channel.id}
 
 
-def create_guild(create_default_channel: bool = True) -> discord_objects.Guild:
-    new_guild = discord_objects.Guild()
+class AccordException(Exception):
+    pass
+
+
+def create_guild(name: str = None, create_default_channel: bool = True) -> discord_objects.Guild:
+    new_guild = discord_objects.Guild(name=name)
     guilds[new_guild.id] = new_guild
     if create_default_channel:
         default_channel = create_text_channel(new_guild)
@@ -38,9 +42,10 @@ def create_guild(create_default_channel: bool = True) -> discord_objects.Guild:
     return new_guild
 
 
-def create_text_channel(channel_guild: int | discord_objects.Guild) -> discord_objects.TextChannel:
-    channel_guild = guilds[_get_discord_object_id(channel_guild)]
-    new_channel = discord_objects.TextChannel(channel_guild)
+def create_text_channel(channel_guild: int | discord_objects.Guild = None, name: str = None) \
+        -> discord_objects.TextChannel:
+    channel_guild = guilds[_get_discord_object_id(channel_guild)] if channel_guild is not None else guild
+    new_channel = discord_objects.TextChannel(channel_guild, name)
     text_channels[new_channel.id] = new_channel
     return new_channel
 
@@ -291,4 +296,6 @@ def _get_command_channel(command_guild: discord_objects.Guild,
                          channel: int | discord_objects.TextChannel = None) -> discord_objects.TextChannel:
     if channel is not None:
         return text_channels[_get_discord_object_id(channel)]
+    if command_guild.id not in default_text_channel_ids:
+        raise AccordException(f"Could not find a default text channel for guild '{command_guild.name}'")
     return text_channels[_get_discord_object_id(default_text_channel_ids[command_guild.id])]
