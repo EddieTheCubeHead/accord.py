@@ -61,3 +61,27 @@ class StateMockingFeatures:
         
         assert accord_engine.response.content == f"Channel name: {channel.name}\n" + \
                                                  f"Guild name: {guild.name}"
+        
+    async def should_be_able_to_use_channel_id_with_guild_object(self, accord_engine: accord.Engine):
+        guild = accord.create_guild()
+        channel = accord.create_text_channel(guild)
+        await accord_engine.app_command("channel-guild", command_guild=guild, channel=channel.id)
+
+        assert accord_engine.response.content == f"Channel name: {channel.name}\n" + \
+               f"Guild name: {guild.name}"
+        
+    async def should_be_able_to_use_channel_object_with_guild_id(self, accord_engine: accord.Engine):
+        guild = accord.create_guild()
+        channel = accord.create_text_channel(guild)
+        await accord_engine.app_command("channel-guild", command_guild=guild.id, channel=channel)
+
+        assert accord_engine.response.content == f"Channel name: {channel.name}\n" + \
+               f"Guild name: {guild.name}"
+        
+    async def should_be_able_to_use_channel_id_with_guild_id(self, accord_engine: accord.Engine):
+        guild = accord.create_guild()
+        channel = accord.create_text_channel(guild)
+        await accord_engine.app_command("channel-guild", command_guild=guild.id, channel=channel.id)
+
+        assert accord_engine.response.content == f"Channel name: {channel.name}\n" + \
+               f"Guild name: {guild.name}"
