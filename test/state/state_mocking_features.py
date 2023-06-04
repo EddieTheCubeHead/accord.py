@@ -10,7 +10,7 @@ def _get_user_command_content(user):
     
 
 # noinspection PyMethodMayBeStatic
-class StateMockingFeatures:
+class BaseObjectMockingFeatures:
     
     async def should_be_able_to_create_and_use_new_guild(self, accord_engine: accord.Engine):
         guild = accord.create_guild()
