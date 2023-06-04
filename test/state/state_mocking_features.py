@@ -9,7 +9,6 @@ def _get_user_command_content(user):
            f"User discriminator: {user.discriminator}"
     
 
-
 # noinspection PyMethodMayBeStatic
 class StateMockingFeatures:
     
@@ -24,6 +23,12 @@ class StateMockingFeatures:
         await accord_engine.app_command("guild", command_guild=guild)
         
         assert accord_engine.response.content == "Guild name: New guild"
+        
+    async def should_get_created_guild_name_from_id_if_not_defined(self, accord_engine: accord.Engine):
+        guild = accord.create_guild()
+        await accord_engine.app_command("guild", command_guild=guild)
+        
+        assert accord_engine.response.content == f"Guild name: Guild {guild.id}"
         
     async def should_be_able_to_call_app_command_on_guild_with_id(self, accord_engine: accord.Engine):
         guild = accord.create_guild()
@@ -55,11 +60,30 @@ class StateMockingFeatures:
         
         assert accord_engine.response.content == "Channel name: New channel"
         
+    async def should_get_text_channel_name_from_id_if_not_defined(self, accord_engine: accord.Engine):
+        channel = accord.create_text_channel()
+        await accord_engine.app_command("channel", channel=channel)
+        
+        assert accord_engine.response.content == f"Channel name: Text channel {channel.id}"
+        
     async def should_be_able_to_call_app_command_on_channel_with_id(self, accord_engine: accord.Engine):
         channel = accord.create_text_channel()
         await accord_engine.app_command("channel", channel=channel.id)
         
         assert accord_engine.response.content == f"Channel name: {channel.name}"
+        
+    async def should_be_able_to_create_channel_from_custom_guild(self):
+        guild = accord.create_guild()
+        channel = accord.create_text_channel(channel_guild=guild)
+        
+        # The library should be designed to not require deep equivalence here, so only compare ids
+        assert channel.guild.id == guild.id
+        
+    async def should_get_guild_from_global_default_guild_if_not_provided(self):
+        channel = accord.create_text_channel()
+
+        # The library should be designed to not require deep equivalence here, so only compare ids.
+        assert channel.guild.id == accord.guild.id
         
     async def should_be_able_to_use_custom_guild_and_custom_channel_simultaneously(self, accord_engine: accord.Engine):
         guild = accord.create_guild()
@@ -86,6 +110,14 @@ class StateMockingFeatures:
         await accord_engine.app_command("user", issuer=user)
         
         assert accord_engine.response.content == _get_user_command_content(user)
+        
+    async def should_get_user_name_icon_and_discriminator_from_id_if_not_provided(self, accord_engine: accord.Engine):
+        user = accord.create_user()
+        await accord_engine.app_command("user", issuer=user)
+        
+        assert accord_engine.response.content == f"User name: User {user.id}\n" + \
+                                                 f"User avatar: User {user.id} avatar" + \
+                                                 f"User discriminator: {user.id}"
         
     async def should_be_able_to_reference_command_issuer_by_user_id(self, accord_engine: accord.Engine):
         user = accord.create_user()
