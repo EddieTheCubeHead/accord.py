@@ -10,7 +10,7 @@ def _get_user_command_content(user):
     
 
 # noinspection PyMethodMayBeStatic
-class BaseObjectMockingFeatures:
+class GuildMockingFeatures:
     
     async def should_be_able_to_create_and_use_new_guild(self, accord_engine: accord.Engine):
         guild = accord.create_guild()
@@ -47,6 +47,10 @@ class BaseObjectMockingFeatures:
         with pytest.raises(accord.AccordException) as actual_exception:
             await accord_engine.app_command("ping", command_guild=guild)
         assert str(actual_exception.value) == f"Could not find a default text channel for guild '{guild.name}'"
+
+
+# noinspection PyMethodMayBeStatic
+class TextChannelMockingFeatures:
         
     async def should_be_able_to_create_and_use_new_text_channel(self, accord_engine: accord.Engine):
         channel = accord.create_text_channel()
@@ -98,6 +102,10 @@ class BaseObjectMockingFeatures:
         with pytest.raises(accord.AccordException) as exception:
             await accord_engine.app_command("ping", command_guild=guild, channel=accord.text_channel)
         assert str(exception.value) == f"Text channel {accord.text_channel.name} is not from guild {guild.name}"
+
+
+# noinspection PyMethodMayBeStatic
+class UserMockingFeatures:
         
     async def should_be_able_to_create_and_use_new_user(self, accord_engine: accord.Engine):
         user = accord.create_user()
@@ -122,5 +130,13 @@ class BaseObjectMockingFeatures:
     async def should_be_able_to_reference_command_issuer_by_user_id(self, accord_engine: accord.Engine):
         user = accord.create_user()
         await accord_engine.app_command("user", issuer=user.id)
+        
+        assert accord_engine.response.content == _get_user_command_content(user)
+        
+    async def should_allow_using_custom_guild_and_channel_with_custom_user(self, accord_engine: accord.Engine):
+        guild = accord.create_guild()
+        channel = accord.create_text_channel(guild)
+        user = accord.create_user()
+        await accord_engine.app_command("user", command_guild=guild, channel=channel, issuer=user)
         
         assert accord_engine.response.content == _get_user_command_content(user)
