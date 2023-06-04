@@ -25,8 +25,24 @@ member = discord_objects.Member(guild, user)
 members: dict[(int, int), discord_objects.Member] = {(member.user.id, member.guild.id): member}
 
 text_channel = discord_objects.TextChannel(guild)
-text_channels: dict[int, discord_objects.TextChannel] = {text_channel.id: text_channel}
-default_text_channel_id = text_channel.id
+text_channels: dict[(int, int), discord_objects.TextChannel] = {text_channel.id: text_channel}
+default_text_channel_ids: dict[int, int] = {guild.id: text_channel.id}
+
+
+def create_guild(create_default_channel: bool = True) -> discord_objects.Guild:
+    new_guild = discord_objects.Guild()
+    guilds[new_guild.id] = new_guild
+    if create_default_channel:
+        default_channel = create_text_channel(new_guild)
+        default_text_channel_ids[new_guild.id] = default_channel.id
+    return new_guild
+
+
+def create_text_channel(channel_guild: int | discord_objects.Guild) -> discord_objects.TextChannel:
+    channel_guild = guilds[_get_discord_object_id(channel_guild)]
+    new_channel = discord_objects.TextChannel(channel_guild)
+    text_channels[new_channel.id] = new_channel
+    return new_channel
 
 
 class InteractionType(Enum):
@@ -231,12 +247,14 @@ class Engine:
     def response(self) -> Response:
         return self.all_responses[-1]
 
-    async def app_command(self, command_name: str, *args, guild_id: int = None, member_id: int = None,
-                          channel_id: int = None, **kwargs):
-        command_guild = guilds[guild_id] if guild_id is not None else guild
-        command_issuer = members[member_id] if member_id is not None else member
-        command_channel = text_channels[channel_id] if channel_id is not None else text_channel
-        interaction = create_command_interaction(self, command_guild, command_issuer, command_channel, command_name, 
+    async def app_command(self, command_name: str, *args,
+                          command_guild: int | discord_objects.Guild = None,
+                          issuer: int | discord_objects.User = None,
+                          channel: int | discord_objects.TextChannel = None, **kwargs):
+        command_guild = _get_command_guild(command_guild)
+        issuer = _get_command_issuer(command_guild, issuer)
+        command_channel = _get_command_channel(command_guild, channel)
+        interaction = create_command_interaction(self, command_guild, issuer, command_channel, command_name, 
                                                  *args, **kwargs)
         self.command_tree._from_interaction(interaction)
         self.client._connection.dispatch('interaction', interaction)
@@ -247,3 +265,30 @@ class Engine:
 
     def clear_responses(self):
         self.all_responses.clear()
+        
+        
+def _get_discord_object_id(discord_object: discord_objects.DiscordObject | int) -> int:
+    if isinstance(discord_object, discord_objects.DiscordObject):
+        return discord_object.id
+    return discord_object
+
+
+def _get_command_guild(command_guild: int | discord_objects.Guild = None) -> discord_objects.Guild:
+    return guilds[_get_discord_object_id(command_guild)] if command_guild is not None else guild
+
+
+def _get_command_issuer(command_guild: discord_objects.Guild, issuer: int | discord_objects.User = None) \
+        -> discord_objects.Member:
+    issuer_user = users[_get_discord_object_id(issuer)] if issuer is not None else user
+    if (issuer_user.id, command_guild.id) in members:
+        return members[(issuer_user.id, command_guild.id)]
+    new_member = discord_objects.Member(guild, issuer_user)
+    members[(issuer_user.id, command_guild.id)] = new_member
+    return new_member
+
+
+def _get_command_channel(command_guild: discord_objects.Guild,
+                         channel: int | discord_objects.TextChannel = None) -> discord_objects.TextChannel:
+    if channel is not None:
+        return text_channels[_get_discord_object_id(channel)]
+    return text_channels[_get_discord_object_id(default_text_channel_ids[command_guild.id])]

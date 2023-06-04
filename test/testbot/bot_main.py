@@ -53,6 +53,11 @@ async def ping(interaction: Interaction):
 @bot.tree.command(name="ephemeral")
 async def ephemeral(interaction: Interaction):
     await interaction.response.send_message("ephemeral", ephemeral=True)
+    
+    
+@bot.tree.command(name="guild")
+async def guild(interaction: Interaction):
+    await interaction.response.send_message(f"Guild id: {interaction.guild.id}")
 
 
 @bot.tree.command(name="repeat")
