@@ -3,6 +3,13 @@ import pytest
 import accord
 
 
+def _get_user_command_content(user):
+    return f"User name: {user.name}\n" + \
+           f"User avatar: {user.avatar}" + \
+           f"User discriminator: {user.discriminator}"
+    
+
+
 # noinspection PyMethodMayBeStatic
 class StateMockingFeatures:
     
@@ -57,31 +64,31 @@ class StateMockingFeatures:
     async def should_be_able_to_use_custom_guild_and_custom_channel_simultaneously(self, accord_engine: accord.Engine):
         guild = accord.create_guild()
         channel = accord.create_text_channel(guild)
-        await accord_engine.app_command("channel-guild", command_guild=guild, channel=channel)
+        await accord_engine.app_command("channel", command_guild=guild, channel=channel)
         
-        assert accord_engine.response.content == f"Channel name: {channel.name}\n" + \
-                                                 f"Guild name: {guild.name}"
+        assert accord_engine.response.content == f"Channel name: {channel.name}"
         
-    async def should_be_able_to_use_channel_id_with_guild_object(self, accord_engine: accord.Engine):
+    async def should_raise_exception_when_channel_not_from_used_guild(self, accord_engine: accord.Engine):
         guild = accord.create_guild()
-        channel = accord.create_text_channel(guild)
-        await accord_engine.app_command("channel-guild", command_guild=guild, channel=channel.id)
-
-        assert accord_engine.response.content == f"Channel name: {channel.name}\n" + \
-               f"Guild name: {guild.name}"
         
-    async def should_be_able_to_use_channel_object_with_guild_id(self, accord_engine: accord.Engine):
-        guild = accord.create_guild()
-        channel = accord.create_text_channel(guild)
-        await accord_engine.app_command("channel-guild", command_guild=guild.id, channel=channel)
-
-        assert accord_engine.response.content == f"Channel name: {channel.name}\n" + \
-               f"Guild name: {guild.name}"
+        with pytest.raises(accord.AccordException) as exception:
+            await accord_engine.app_command("ping", command_guild=guild, channel=accord.text_channel)
+        assert str(exception.value) == f"Text channel {accord.text_channel.name} is not from guild {guild.name}"
         
-    async def should_be_able_to_use_channel_id_with_guild_id(self, accord_engine: accord.Engine):
-        guild = accord.create_guild()
-        channel = accord.create_text_channel(guild)
-        await accord_engine.app_command("channel-guild", command_guild=guild.id, channel=channel.id)
-
-        assert accord_engine.response.content == f"Channel name: {channel.name}\n" + \
-               f"Guild name: {guild.name}"
+    async def should_be_able_to_create_and_use_new_user(self, accord_engine: accord.Engine):
+        user = accord.create_user()
+        await accord_engine.app_command("user", issuer=user)
+        
+        assert accord_engine.response.content == _get_user_command_content(user)
+        
+    async def should_be_able_to_provide_user_data(self, accord_engine: accord.Engine):
+        user = accord.create_user(name="Tester", avatar="test_icon.png", discriminator="1234")
+        await accord_engine.app_command("user", issuer=user)
+        
+        assert accord_engine.response.content == _get_user_command_content(user)
+        
+    async def should_be_able_to_reference_command_issuer_by_user_id(self, accord_engine: accord.Engine):
+        user = accord.create_user()
+        await accord_engine.app_command("user", issuer=user.id)
+        
+        assert accord_engine.response.content == _get_user_command_content(user)

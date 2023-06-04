@@ -64,10 +64,13 @@ async def guild(interaction: Interaction):
 async def channel(interaction: Interaction):
     await interaction.response.send_message(f"Channel name: {interaction.channel.name}")
     
-
-@bot.tree.command(name="channel-guild")
-async def channel_guild(interaction: Interaction):
-    content = f"Channel name: {interaction.channel.name}\nGuild name: {interaction.guild.name}"
+    
+@bot.tree.command(name="user")
+async def user(interaction: Interaction):
+    content = f"User name: {interaction.user.name}\n" + \
+              f"User avatar: {interaction.user.avatar}" + \
+              f"User discriminator: {interaction.user.discriminator}"
+        
     await interaction.response.send_message(content)
 
 

@@ -39,16 +39,17 @@ class Guild(DiscordObject):
 
 class User(DiscordObject):
     
-    def __init__(self, name: str = None, avatar: str = None):
+    def __init__(self, name: str = None, avatar: str = None, discriminator: str = None):
         super().__init__()
         self.name = name if name is not None else f"User {self.id}"
         self.avatar = avatar if avatar is not None else f"User {self.id} avatar"
+        self.discriminator = discriminator if discriminator is not None else str(self.id)
         
     def as_dict(self) -> dict[str, typing.Any]:
         return {
             "id": self.id,
             "username": self.name,
-            "discriminator": self.id,
+            "discriminator": self.discriminator,
             "avatar": self.avatar
         }
 

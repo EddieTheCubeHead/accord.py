@@ -50,6 +50,12 @@ def create_text_channel(channel_guild: int | discord_objects.Guild = None, name:
     return new_channel
 
 
+def create_user(name: str = None, avatar: str = None, discriminator: str = None):
+    new_user = discord_objects.User(name=name, avatar=avatar, discriminator=discriminator)
+    users[new_user.id] = new_user
+    return new_user
+
+
 class InteractionType(Enum):
     ApplicationCommand = 2
     InteractionComponent = 3
@@ -295,7 +301,11 @@ def _get_command_issuer(command_guild: discord_objects.Guild, issuer: int | disc
 def _get_command_channel(command_guild: discord_objects.Guild,
                          channel: int | discord_objects.TextChannel = None) -> discord_objects.TextChannel:
     if channel is not None:
-        return text_channels[_get_discord_object_id(channel)]
+        channel = text_channels[_get_discord_object_id(channel)]
+        if channel.guild.id != command_guild.id:
+            raise AccordException(f"Text channel {channel.name} is not from guild {command_guild.name}")
+        return channel
     if command_guild.id not in default_text_channel_ids:
         raise AccordException(f"Could not find a default text channel for guild '{command_guild.name}'")
-    return text_channels[_get_discord_object_id(default_text_channel_ids[command_guild.id])]
+    command_channel = text_channels[_get_discord_object_id(default_text_channel_ids[command_guild.id])]
+    return command_channel
