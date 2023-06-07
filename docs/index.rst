@@ -15,7 +15,8 @@ functionalities:
 * Check output: discord.py internal state is not revealed, only actions performed in discord like responding to commands or guild moderation events
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Table of contents
 
     accord
+    discord_objects

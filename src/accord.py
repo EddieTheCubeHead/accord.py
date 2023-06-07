@@ -12,28 +12,67 @@ import discord
 
 import discord_objects
 
-guild = discord_objects.Guild()
+guild: discord_objects.Guild = discord_objects.Guild()
+"""The default mock guild used for operations with accord.py"""
+
 guilds: dict[int, discord_objects.Guild] = {guild.id: guild}
-default_guild_id = guild.id
+"""A dictionary containing all created mock guilds, mapped by id"""
 
-user = discord_objects.User()
-client_user = discord_objects.User("Test client")
+default_guild_id: int = guild.id
+"""A value containing the id of the default guild"""
+
+user: discord_objects.User = discord_objects.User()
+"""The default mock user used for operations with accord.py"""
+
+client_user: discord_objects.User = discord_objects.User("Test client")
+"""An user object representing the client being tested"""
+
 users: dict[int, discord_objects.User] = {user.id: user}
-default_user_id = user.id
+"""A dictionary containing all created mock users, mapped by id"""
 
-member = discord_objects.Member(guild, user)
+default_user_id: int = user.id
+"""A value containing the id of the default user"""
+
+member: discord_objects.Member = discord_objects.Member(guild, user)
+"""A member object based on the relation of the default user and the default guild"""
+
 members: dict[(int, int), discord_objects.Member] = {(member.user.id, member.guild.id): member}
+"""A dictionary containing all configured member mappings.
 
-text_channel = discord_objects.TextChannel(guild)
-text_channels: dict[(int, int), discord_objects.TextChannel] = {text_channel.id: text_channel}
+Mapped by a tuple of (user_id, guild_id). A member object is only created when an user is used with a guild for the
+first time."""
+
+text_channel: discord_objects.TextChannel = discord_objects.TextChannel(guild)
+"""The default mock text channel used for operations with accord.py"""
+
+text_channels: dict[int, discord_objects.TextChannel] = {text_channel.id: text_channel}
+"""A dictionary containing all mock text channels, mapped by id"""
+
 default_text_channel_ids: dict[int, int] = {guild.id: text_channel.id}
+"""A dictionary containing the default text channel ids for each guild, mapped by guild id"""
 
 
 class AccordException(Exception):
+    """Exception thrown by accord.py, subclasses :class:`Exception` with no interface changes"""
     pass
 
 
 def create_guild(name: str = None, create_default_channel: bool = True) -> discord_objects.Guild:
+    """A method for creating a new mock guild.
+    
+    Caution:
+        You should not instantiate :class:`discord_objects.Guild` manually, instead this method should be used.
+    
+    Attention:
+        Guild id is generated automatically
+    
+    Args:
+        name: The name of the guild to be created. :obj:`None` uses ``Guild {id}``. Defaults to :obj:`None`
+        create_default_channel: Whether to create a default text channel for the guild. Defaults to :obj:`True`
+        
+    Returns:
+        The created :class:`discord_objects.Guild` object
+    """
     new_guild = discord_objects.Guild(name=name)
     guilds[new_guild.id] = new_guild
     if create_default_channel:
@@ -44,6 +83,23 @@ def create_guild(name: str = None, create_default_channel: bool = True) -> disco
 
 def create_text_channel(channel_guild: int | discord_objects.Guild = None, name: str = None) \
         -> discord_objects.TextChannel:
+    """A method for creating a new mock channel
+    
+    Caution:
+        You should not instantiate :class:`discord_objects.TextChannel` manually, instead this method should be used.
+    
+    Attention:
+        TextChannel id is generated automatically
+        
+    Args:
+        channel_guild: The guild object or the id of the guild the channel should belong to. :obj:`None` uses the 
+            default guild (see: :attr:`guild`). Defaults to :obj:`None`
+        name: The name of the text channel to be created. :obj:`None` uses ``Text channel {id}``. Defaults to 
+            :obj:`None`
+        
+    Returns:
+        The created :class:`discord_objects.TextChannel` object
+    """
     channel_guild = guilds[_get_discord_object_id(channel_guild)] if channel_guild is not None else guild
     new_channel = discord_objects.TextChannel(channel_guild, name)
     text_channels[new_channel.id] = new_channel
@@ -51,12 +107,29 @@ def create_text_channel(channel_guild: int | discord_objects.Guild = None, name:
 
 
 def create_user(name: str = None, avatar: str = None, discriminator: str = None):
+    """A method for creating a new mock user
+    
+    Caution:
+        You should not instantiate :class:`discord_objects.User` manually, instead this method should be used.
+    
+    Attention:
+        User id is generated automatically
+    
+    Args:
+        name: The name of the user to be created. :obj:`None` uses ``User {id}``. Defaults to :obj:`None`. 
+        avatar: The avatar url of the user to be created. :obj:`None` uses ``User {id} avatar``. Defaults to 
+            :obj:`None`. 
+        discriminator: The discriminator of the user to be created. :obj:`None` uses ``{id}``. Defaults to :obj:`None`. 
+
+    Returns:
+        The created :class:`discord_objects.User` object
+    """
     new_user = discord_objects.User(name=name, avatar=avatar, discriminator=discriminator)
     users[new_user.id] = new_user
     return new_user
 
 
-class InteractionType(Enum):
+class _InteractionType(Enum):
     ApplicationCommand = 2
     InteractionComponent = 3
     Autocomplete = 4
@@ -66,6 +139,11 @@ class InteractionType(Enum):
 # The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
 # noinspection PyProtectedMember
 class Response:
+    """A class representing an interaction response sent by the client under testing
+    
+    Caution:
+        You should not instantiate :class:`accord.Response` yourself.
+    """
 
     def __init__(self, engine: Engine, message: discord_objects.Message, content: str | None, *, 
                  ephemeral: bool = False, view: discord.ui.View = None, modal: discord.ui.Modal = None):
@@ -78,17 +156,35 @@ class Response:
         
     @property
     def button(self) -> discord.ui.Button | None:
+        """A property returning the *first* button of the view associated with the response, if available
+        
+        Attention:
+            Returns :obj:`None` if response has no view or the view has no buttons.
+        """
         return self.get_button()
 
     async def activate_button(self, button: str | int = 0):
+        """A coroutine to activate (click) a button on the view associated with the response.
+        
+        Args:
+            button: The index or label of the button to activate. Defaults to ``0``
+        """
         to_activate = self.get_button(button)
         if to_activate is None:
             return
-        interaction = create_component_interaction(self._engine, 3, self._message, to_activate.custom_id)
+        interaction = _create_component_interaction(self._engine, 3, self._message, to_activate.custom_id)
         self._engine.client._connection._view_store.dispatch_view(2, to_activate.custom_id, interaction)
         await asyncio.sleep(0)
         
     def get_button(self, button: str | int = 0) -> discord.ui.Button | None:
+        """A method to get a button from the view
+        
+        Args:
+            button: The index or label of the button to get. Defaults to ``0``
+
+        Returns:
+            :obj:`discord_objects.Button` if button found, :obj:`None` if not found.
+        """
         button_name: str | None = button if type(button) == str else None
         button_index: int | None = button if type(button) == int else None
         all_items = self.view.children
@@ -102,6 +198,18 @@ class Response:
         return found_button
     
     def modal_input(self, modal_field: str, value: typing.Any) -> Response:
+        """A method to send input to a text input field in a modal associated with the response.
+        
+        Attention:
+            Does nothing if the specified field is not found in the modal
+            
+        Args:
+            modal_field: the name of the field that should be filled with the given value
+            value: The value to be set to the given field
+            
+        Returns:
+            Returns the :obj:`accord.Response` for chaining
+        """
         field = getattr(self.modal, modal_field)
         if field is None:
             return self
@@ -114,8 +222,9 @@ class Response:
         return self
     
     async def submit_modal(self):
+        """A coroutine that submits the modal associated with the response."""
         modal = self.modal
-        interaction = create_component_interaction(self._engine, 5, self._message, modal.custom_id)
+        interaction = _create_component_interaction(self._engine, 5, self._message, modal.custom_id)
         components = _build_components(modal)
         self._engine.client._connection._view_store.dispatch_modal(modal.custom_id, interaction, components)
         await asyncio.sleep(0)
@@ -130,7 +239,7 @@ def _build_components(modal: discord.ui.Modal) -> list[dict[typing.Any, typing.A
     return [components]
                 
     
-class ResponseCatcher:
+class _ResponseCatcher:
     
     def __init__(self, parent: discord.Interaction, engine: Engine, text_channel: discord_objects.TextChannel, 
                  author: discord_objects.Member, message: discord_objects.Message = None):
@@ -146,7 +255,7 @@ class ResponseCatcher:
             raise discord.InteractionResponded(self._parent)
         self._responded = True
         response = Response(self._engine, self._message, content, ephemeral=ephemeral, view=view)
-        self._engine.all_responses.append(response)
+        self._engine._all_responses.append(response)
         self._handle_view(view, ephemeral=False)
 
     # noinspection PyProtectedMember
@@ -162,12 +271,12 @@ class ResponseCatcher:
         
     def send_modal(self, modal: discord.ui.Modal):
         response = Response(self._engine, self._message, None, modal=modal)
-        self._engine.all_responses.append(response)
+        self._engine._all_responses.append(response)
         self._engine.client._connection.store_view(modal)
 
 
-def create_command_interaction(engine: Engine, guild: discord_objects.Guild, member: discord_objects.Member, 
-                               text_channel: discord_objects.TextChannel, command_name: str, *args, **kwargs) \
+def _create_command_interaction(engine: Engine, guild: discord_objects.Guild, member: discord_objects.Member,
+                                text_channel: discord_objects.TextChannel, command_name: str, *args, **kwargs) \
         -> discord.Interaction:
     mock_interaction = _create_interaction_base(engine, member, text_channel)
     mock_interaction.command = engine.command_tree.get_command(command_name)
@@ -176,8 +285,8 @@ def create_command_interaction(engine: Engine, guild: discord_objects.Guild, mem
     return mock_interaction
 
 
-def create_component_interaction(engine: Engine, interaction_type: int, message: discord_objects.Message, 
-                                 component_id: str) -> discord.Interaction:
+def _create_component_interaction(engine: Engine, interaction_type: int, message: discord_objects.Message,
+                                  component_id: str) -> discord.Interaction:
     mock_interaction = _create_interaction_base(engine, message.author, message.text_channel, message)
     _build_component_interaction_data(mock_interaction, interaction_type, component_id)
     return mock_interaction
@@ -193,7 +302,7 @@ def _create_interaction_base(engine: Engine, member: discord_objects.Member, tex
     mock_interaction.user = member.user
     mock_interaction.channel = text_channel
     mock_interaction.accord_engine = engine
-    mock_interaction.response = ResponseCatcher(mock_interaction, engine, text_channel, member, message)
+    mock_interaction.response = _ResponseCatcher(mock_interaction, engine, text_channel, member, message)
     if message is not None:
         mock_interaction.message = message
     return mock_interaction
@@ -222,6 +331,18 @@ def _build_options(signature: inspect.Signature, *args, **kwargs):
 # The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
 # noinspection PyProtectedMember
 async def create_engine(client: discord.Client, command_tree: discord.app_commands.CommandTree) -> Engine:
+    """A method to create an :class:`accord.Engine` instance to be used with testing.
+    
+    Caution:
+        You should not instantiate :class:`accord.Engine` manually, instead this method should be used.
+        
+    Args:
+        client: The client that the engine should run against
+        command_tree: The command tree of the client
+        
+    Returns:
+        An engine instance that can be used to run commands or events on the client
+    """
     engine = Engine(client, command_tree)
     await engine.client._async_setup_hook()
     await engine.client.setup_hook()
@@ -247,35 +368,76 @@ def _insert_objects(client: discord.Client):
 # The engine will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
 # noinspection PyProtectedMember
 class Engine:
+    """The engine that is responsible for running commands and events against the client under test.
+    
+    Caution:
+        You should not instantiate :class:`accord.Engine` manually, instead the :meth:`accord.create_engine` method
+        should be used.
+            
+    Attributes:
+        client: The client under test
+        command_tree: The command tree of the client. Can be :obj:`None` if you are not testing application commands.
+    """
 
     def __init__(self, client: discord.Client, command_tree: discord.app_commands.CommandTree):
-        self.client = client
+        self.client: discord.Client = client
         command_tree.sync = AsyncMock()
-        self.command_tree = command_tree
-        self.all_responses: list[Response] = []
+        self.command_tree: discord.app_commands.CommandTree | None = command_tree
+        self._all_responses: list[Response] = []
 
     @property
     def response(self) -> Response:
-        return self.all_responses[-1]
+        """A property representing the newest response sent by the client"""
+        return self._all_responses[-1]
 
     async def app_command(self, command_name: str, *args,
                           command_guild: int | discord_objects.Guild = None,
                           issuer: int | discord_objects.User = None,
                           channel: int | discord_objects.TextChannel = None, **kwargs):
+        """A coroutine to send an application command to the client. 
+        
+        Attention:
+            Accepts *args and **kwargs to be sent to the command.
+            
+        Raises:
+            :exc:`accord.AccordException`: on guild/channel mismatch or if channel is not given and guild does not have 
+                a default channel
+        
+        Args:
+            command_name: The name of the command to be run
+            
+        Keyword Args:
+            command_guild: The guild or the id of the guild the command should be run on. :obj:`None` uses the default
+                guild (see :attr:`guild`). Defaults to :obj:`None`
+            issuer: The user or the id of the user issuing the command. :obj:`None` uses the default member (see
+                :attr:`member`). Defaults to :obj:`None`
+            channel: The channel of the id of the channel the command is issued on. :obj:`None` uses the default text
+                channel (see :attr:`text_channel`). Defaults to :obj:`None`
+            
+        """
         command_guild = _get_command_guild(command_guild)
         issuer = _get_command_issuer(command_guild, issuer)
         command_channel = _get_command_channel(command_guild, channel)
-        interaction = create_command_interaction(self, command_guild, issuer, command_channel, command_name, 
-                                                 *args, **kwargs)
+        interaction = _create_command_interaction(self, command_guild, issuer, command_channel, command_name,
+                                                  *args, **kwargs)
         self.command_tree._from_interaction(interaction)
         self.client._connection.dispatch('interaction', interaction)
         await asyncio.sleep(0)
 
     def get_response(self, index: int) -> Response:
-        return self.all_responses[index]
+        """A method for getting a :obj:`Response` in the specified index
+        
+        Args:
+            index: The index of the response
+            
+        Returns:
+            The :obj:`Response` in the specified index.
+        """
+        return self._all_responses[index]
 
     def clear_responses(self):
-        self.all_responses.clear()
+        """A method for clearing the response list"""
+        self._all_responses.clear()
         
         
 def _get_discord_object_id(discord_object: discord_objects.DiscordObject | int) -> int:
