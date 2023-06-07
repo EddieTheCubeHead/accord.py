@@ -4,3 +4,5 @@ secrets.json
 /.ruff_cache/
 .pytest_cache/
 .build/
+/dist/
+/src/accord.py.egg-info/
