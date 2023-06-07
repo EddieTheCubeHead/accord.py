@@ -3,3 +3,4 @@ secrets.json
 /.idea/
 /.ruff_cache/
 .pytest_cache/
+.build/
