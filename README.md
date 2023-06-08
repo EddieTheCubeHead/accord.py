@@ -2,6 +2,8 @@
 
 A testing library for the discord.py library
 
+[Documentation available in GitHub pages](https://eddiethecubehead.github.io/accord.py/)
+
 Work In Progress
 
 ## Current status
