@@ -1,6 +1,7 @@
 import json
 import os
 
+import discord
 # discord.py wants to be listed as discord.py in requirements, but also wants to be imported as discord
 # noinspection PyPackageRequirements
 from discord import Client, Intents, Object, Interaction
@@ -77,6 +78,12 @@ async def user(interaction: Interaction):
 @bot.tree.command(name="repeat")
 async def repeat(interaction: Interaction, to_repeat: str, times: int = 2):
     await interaction.response.send_message(f"{to_repeat}\n" * times)
+    
+    
+@bot.tree.command(name="embed")
+async def embed(interaction: Interaction):
+    to_send = discord.Embed(title="Test embed", description="An embed for testing embeds")
+    await interaction.response.send_message("Here's your embed:", embed=to_send)
 
 
 class Reverser(Transformer):

@@ -1,5 +1,5 @@
 API reference
 =============
 
-.. automodule:: accord
+.. automodule:: engine
       :members:

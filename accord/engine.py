@@ -13,7 +13,7 @@ import discord
 import discord_objects
 
 guild: discord_objects.Guild = discord_objects.Guild()
-"""The default mock guild used for operations with accord.py"""
+"""The default mock guild used for operations with engine.py"""
 
 guilds: dict[int, discord_objects.Guild] = {guild.id: guild}
 """A dictionary containing all created mock guilds, mapped by id"""
@@ -22,7 +22,7 @@ default_guild_id: int = guild.id
 """A value containing the id of the default guild"""
 
 user: discord_objects.User = discord_objects.User()
-"""The default mock user used for operations with accord.py"""
+"""The default mock user used for operations with engine.py"""
 
 client_user: discord_objects.User = discord_objects.User("Test client")
 """An user object representing the client being tested"""
@@ -43,7 +43,7 @@ Mapped by a tuple of (user_id, guild_id). A member object is only created when a
 first time."""
 
 text_channel: discord_objects.TextChannel = discord_objects.TextChannel(guild)
-"""The default mock text channel used for operations with accord.py"""
+"""The default mock text channel used for operations with engine.py"""
 
 text_channels: dict[int, discord_objects.TextChannel] = {text_channel.id: text_channel}
 """A dictionary containing all mock text channels, mapped by id"""
@@ -53,7 +53,7 @@ default_text_channel_ids: dict[int, int] = {guild.id: text_channel.id}
 
 
 class AccordException(Exception):
-    """Exception thrown by accord.py, subclasses :class:`Exception` with no interface changes"""
+    """Exception thrown by engine.py, subclasses :class:`Exception` with no interface changes"""
     pass
 
 
@@ -143,16 +143,25 @@ class Response:
     
     Caution:
         You should not instantiate :class:`accord.Response` yourself.
+        
+    Attributes:
+        content: The content of the message
+        ephemeral: Whether the response is only visible to the user who caused the interaction
+        view: The :obj:`discord.ui.View` associated with the response, if any
+        modal: The :obj:`discord.ui.Modal` associated with the response, if any
+        embed: The :obj:`discord.Embed` associated with the response, if any
     """
 
     def __init__(self, engine: Engine, message: discord_objects.Message, content: str | None, *, 
-                 ephemeral: bool = False, view: discord.ui.View = None, modal: discord.ui.Modal = None):
+                 ephemeral: bool = False, view: discord.ui.View = None, modal: discord.ui.Modal = None,
+                 embed: discord.Embed = None):
         self._engine = engine
         self._message = message
         self.content = str(content)
         self.ephemeral = ephemeral
         self.view = view
         self.modal = modal
+        self.embed = embed
         
     @property
     def button(self) -> discord.ui.Button | None:
@@ -238,27 +247,29 @@ def _build_components(modal: discord.ui.Modal) -> list[dict[typing.Any, typing.A
     components = {"type": 1, "components": child_list}
     return [components]
                 
-    
+
+# The response catcher will be accessing a lot of the inner workings of discord.py. Suppress warnings for that
+# noinspection PyProtectedMember
 class _ResponseCatcher:
     
-    def __init__(self, parent: discord.Interaction, engine: Engine, text_channel: discord_objects.TextChannel, 
+    def __init__(self, parent: discord.Interaction, engine: Engine, channel: discord_objects.TextChannel,
                  author: discord_objects.Member, message: discord_objects.Message = None):
         self._parent = parent
         self._engine = engine
-        self._message = message if message is not None else discord_objects.Message(text_channel, author)
+        self._message = message if message is not None else discord_objects.Message(channel, author)
         self._message.interaction = parent
         self._original_message = message
         self._responded = False
         
-    def send_message(self, content: str, *, ephemeral: bool = False, view: discord.ui.View = None):
+    def send_message(self, content: str, *, ephemeral: bool = False, view: discord.ui.View = None,
+                     embed: discord.Embed = None):
         if self._responded:
             raise discord.InteractionResponded(self._parent)
         self._responded = True
-        response = Response(self._engine, self._message, content, ephemeral=ephemeral, view=view)
+        response = Response(self._engine, self._message, content, ephemeral=ephemeral, view=view, embed=embed)
         self._engine._all_responses.append(response)
         self._handle_view(view, ephemeral=False)
 
-    # noinspection PyProtectedMember
     def _handle_view(self, view: discord.ui.View | None, ephemeral: bool = False):
         if view is discord.utils.MISSING or view.is_finished():
             return

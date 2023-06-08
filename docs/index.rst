@@ -18,5 +18,5 @@ functionalities:
     :maxdepth: 1
     :caption: Table of contents
 
-    accord
+    engine
     discord_objects
