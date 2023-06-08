@@ -9,9 +9,12 @@ unfixable = []
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".git",
+    ".pytest_cache",
     ".ruff_cache",
     "__pypackages__",
     "venv",
+    "dist",
+    "docs"
 ]
 
 # Same as Black.
