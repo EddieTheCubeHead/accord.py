@@ -261,7 +261,7 @@ class _ResponseCatcher:
         self._original_message = message
         self._responded = False
         
-    def send_message(self, content: str, *, ephemeral: bool = False, view: discord.ui.View = None,
+    def send_message(self, content: str = None, *, ephemeral: bool = False, view: discord.ui.View = None,
                      embed: discord.Embed = None):
         if self._responded:
             raise discord.InteractionResponded(self._parent)

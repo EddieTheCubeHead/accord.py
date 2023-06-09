@@ -88,6 +88,14 @@ async def embed(interaction: Interaction, author_info: bool = False):
     await interaction.response.send_message("Here's your embed:", embed=to_send)
 
 
+@bot.tree.command(name="fields")
+async def author_embed(interaction: Interaction, amount: int, inline: bool):
+    to_send = discord.Embed(title="Fields test", description="Testing embed fields")
+    for field_number in range(1, amount + 1):
+        to_send.add_field(name=field_number, value=f"Field {field_number}", inline=inline)
+    await interaction.response.send_message(embed=to_send)
+
+
 class Reverser(Transformer):
     async def transform(self, _: Interaction, string: str) -> str:
         return string[::-1]
