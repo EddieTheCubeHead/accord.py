@@ -5,7 +5,7 @@ import accord
 
 def _get_user_command_content(user: accord.User) -> str:
     return f"User name: {user.name}\n" + \
-           f"User avatar: {user.avatar}" + \
+           f"User avatar url: {user.avatar.url}" + \
            f"User discriminator: {user.discriminator}"
     
 
@@ -123,8 +123,9 @@ class UserMockingFeatures:
         user: accord.User = accord.create_user()
         await accord_engine.app_command("user", issuer=user)
         
+        discord_url = "https://cdn.discordapp.com"
         assert accord_engine.response.content == f"User name: User {user.id}\n" + \
-                                                 f"User avatar: User {user.id} avatar" + \
+                                                 f"User avatar url: {discord_url}/user_{user.id}_avatar.png" + \
                                                  f"User discriminator: {user.id}"
         
     async def should_be_able_to_reference_command_issuer_by_user_id(self, accord_engine: accord.Engine):

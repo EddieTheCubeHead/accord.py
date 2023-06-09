@@ -69,7 +69,7 @@ async def channel(interaction: Interaction):
 @bot.tree.command(name="user")
 async def user(interaction: Interaction):
     content = f"User name: {interaction.user.name}\n" + \
-              f"User avatar: {interaction.user.avatar}" + \
+              f"User avatar url: {interaction.user.avatar.url}" + \
               f"User discriminator: {interaction.user.discriminator}"
         
     await interaction.response.send_message(content)
@@ -81,8 +81,10 @@ async def repeat(interaction: Interaction, to_repeat: str, times: int = 2):
     
     
 @bot.tree.command(name="embed")
-async def embed(interaction: Interaction):
+async def embed(interaction: Interaction, author_info: bool = False):
     to_send = discord.Embed(title="Test embed", description="An embed for testing embeds")
+    if author_info:
+        to_send.set_author(name=interaction.user.name, url="http://embed.url", icon_url=interaction.user.avatar.url)
     await interaction.response.send_message("Here's your embed:", embed=to_send)
 
 

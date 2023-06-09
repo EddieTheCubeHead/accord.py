@@ -16,17 +16,17 @@ class BasicEmbedValidationFeatures:
         await accord_engine.app_command("embed")
         
         assert accord_engine.response.content == "Here's your embed:"
-        
+
     async def should_be_able_to_create_and_use_embed_verifier_objects(self, accord_engine: accord.Engine):
         description = "An embed for testing embeds"
-        embed_verifier = accord.utils.EmbedVerifier(title_match="Test embed", description_match=description)
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match=description)
         
         await accord_engine.app_command("embed")
         
         embed_verifier.matches_fully(accord_engine.response.embed)
-        
+
     async def should_be_able_to_match_only_configured_fields(self, accord_engine: accord.Engine):
-        embed_verifier = accord.utils.EmbedVerifier()
+        embed_verifier = accord.EmbedVerifier()
         
         await accord_engine.app_command("embed")
         
@@ -34,7 +34,7 @@ class BasicEmbedValidationFeatures:
 
     async def should_raise_assertion_error_with_message_if_incorrect_title(self, accord_engine: accord.Engine):
         description = "An embed for testing embeds"
-        embed_verifier = accord.utils.EmbedVerifier(title_match="Incorrect embed", description_match=description)
+        embed_verifier = accord.EmbedVerifier(title_match="Incorrect embed", description_match=description)
 
         await accord_engine.app_command("embed")
 
@@ -47,7 +47,7 @@ class BasicEmbedValidationFeatures:
     async def should_raise_assertion_error_with_message_if_incorrect_description(self, accord_engine: accord.Engine):
         description = "Incorrect description"
         actual_description = "An embed for testing embeds"
-        embed_verifier = accord.utils.EmbedVerifier(title_match="Test embed", description_match=description)
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match=description)
 
         await accord_engine.app_command("embed")
 
@@ -56,4 +56,15 @@ class BasicEmbedValidationFeatures:
             
         assert str(exception.value) == f"Expected field 'description' to match pattern '{description}', but found " + \
                                        f"'{actual_description}' instead."
+      
+    async def should_support_author_validation(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed",
+                                              description_match="An embed for testing embeds",
+                                              author_name=accord.user.name,
+                                              author_icon_url=accord.user.avatar.url,
+                                              author_url="http://embed.url")
+        
+        await accord_engine.app_command("embed", author_info=True)
+        
+        embed_verifier.matches_fully(accord_engine.response.embed)        
     
