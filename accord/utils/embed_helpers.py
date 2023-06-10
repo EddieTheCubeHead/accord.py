@@ -51,13 +51,15 @@ class EmbedVerifier:
     
     def __init__(self, *, title_match: str | None = _MISSING, description_match: str | None = _MISSING,
                  author_name: str | None = _MISSING, author_icon_url: str | None = _MISSING,
-                 author_url: str | None = _MISSING, fields: list[EmbedField] | None = _MISSING):
+                 author_url: str | None = _MISSING, fields: list[EmbedField] | None = _MISSING,
+                 colour: int | None = _MISSING):
         self._title_match = title_match
         self._description_match = description_match
         self._author_name = author_name
         self._author_icon_url = author_icon_url
         self._author_url = author_url
         self._fields = fields
+        self._colour = colour
         
     def matches_fully(self, embed: discord.Embed):
         self._matches(embed, False, False, False)
@@ -79,6 +81,7 @@ class EmbedVerifier:
             assert _compare_value(pattern, field), f"Expected field '{field_name}' to match pattern '{pattern}', but " \
                                                    f"found '{field}' instead."
         self._validate_fields(embed, match_all_if_not_set, allow_extra_fields, allow_any_field_order)
+        self._valudate_colour(embed, match_all_if_not_set)
     
     def _validate_author_existence(self, embed: discord.Embed) -> bool:
         if not embed.author:
@@ -115,3 +118,12 @@ class EmbedVerifier:
                 assert expected_index == actual_index,\
                     f"Expected to find field '{expected_field[0]}' in index {expected_index}, but was in index " \
                     f"{actual_index} instead"
+
+    def _validate_colour(self, embed: discord.Embed, match_all_if_not_set: bool):
+        if match_all_if_not_set and self._colour is _MISSING:
+            return
+
+        if self._colour is _MISSING or self._colour is None:
+            assert embed.colour is None, f"Expected embed colour to be None, but was {embed.colour.value}."
+
+        assert self._colour == embed.colour.value, f"Expected embed colour to be {embed.colour.value}."

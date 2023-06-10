@@ -94,6 +94,12 @@ async def author_embed(interaction: Interaction, amount: int, inline: bool):
     for field_number in range(1, amount + 1):
         to_send.add_field(name=field_number, value=f"Field {field_number}", inline=inline)
     await interaction.response.send_message(embed=to_send)
+    
+    
+@bot.tree.command(name="custom-embed")
+async def custom_embed(interaction: Interaction, colour: int):
+    to_send = discord.Embed(title="Custom embed", description="Testing other embed values", colour=colour)
+    await interaction.response.send_message(embed=to_send)
 
 
 class Reverser(Transformer):

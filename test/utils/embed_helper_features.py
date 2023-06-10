@@ -253,4 +253,17 @@ class EmbedFieldsValidationFeatures:
         assert str(exception.value) == "Expected to find field with name '2' and value 'Field 2' in the embed " \
                                        "fields. Fields [0] were ignored because they were used in earlier " \
                                        "verifications."
+        
+
+# noinspection PyMethodMayBeStatic
+class OtherEmbedDataValidationFeatures:
+    
+    async def should_be_able_to_validate_embed_colour(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              colour=0x000000)
+        
+        await accord_engine.app_command("custom-embed", colour=0x000000)
+        
+        embed_verifier.matches_configured(accord_engine.response.embed)
     
