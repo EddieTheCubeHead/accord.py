@@ -3,6 +3,8 @@ import typing
 
 import discord
 
+import accord
+
 _MATCH_ALL = r".*"
 
 
@@ -52,14 +54,23 @@ class EmbedVerifier:
     def __init__(self, *, title_match: str | None = _MISSING, description_match: str | None = _MISSING,
                  author_name: str | None = _MISSING, author_icon_url: str | None = _MISSING,
                  author_url: str | None = _MISSING, fields: list[EmbedField] | None = _MISSING,
-                 colour: int | None = _MISSING):
+                 colour: int | None = _MISSING, color: int | None = _MISSING,
+                 footer_text: str | None = _MISSING, footer_icon_url: str | None = _MISSING):
         self._title_match = title_match
         self._description_match = description_match
         self._author_name = author_name
         self._author_icon_url = author_icon_url
         self._author_url = author_url
+        self._footer_text = footer_text
+        self._footer_icon_url = footer_icon_url
         self._fields = fields
-        self._colour = colour
+        if colour is _MISSING:
+            self._colour = color
+        else:
+            if color is not _MISSING:
+                raise accord.AccordException("Attempted to set both 'colour' and 'color' fields while creating an "
+                                             "embed verifier. Please only use one of the fields.")
+            self._colour = colour
         
     def matches_fully(self, embed: discord.Embed):
         self._matches(embed, False, False, False)
@@ -77,6 +88,10 @@ class EmbedVerifier:
                        (_get_pattern(self._author_icon_url, match_all_if_not_set), embed.author.icon_url, 
                         "author.icon_url"),
                        (_get_pattern(self._author_url, match_all_if_not_set), embed.author.url, "author.url")]
+        if self._validate_footer_existence(embed):
+            values += [(_get_pattern(self._footer_text, match_all_if_not_set), embed.footer.text, "footer.text"),
+                       (_get_pattern(self._footer_icon_url, match_all_if_not_set), embed.footer.icon_url, 
+                        "footer.icon_url")]
         for pattern, field, field_name in values:
             assert _compare_value(pattern, field), f"Expected field '{field_name}' to match pattern '{pattern}', but " \
                                                    f"found '{field}' instead."
@@ -90,10 +105,24 @@ class EmbedVerifier:
         return True
 
     def _validate_none_author(self):
-        assert self._author_name is _MISSING, "Expected to have author name data in embed but found no author data."
-        assert self._author_icon_url is _MISSING, "Expected to have author icon url data in embed but found no " \
-                                                  "author data."
-        assert self._author_url is _MISSING, "Expected to have author url data in embed but found no author data."
+        assert self._author_name in (_MISSING, None), "Expected to have author name data in embed but found no " \
+                                                      "author data."
+        assert self._author_icon_url in (_MISSING, None), "Expected to have author icon url data in embed but found " \
+                                                          "no author data."
+        assert self._author_url in (_MISSING, None), "Expected to have author url data in embed but found no author " \
+                                                     "data."
+        
+    def _validate_footer_existence(self, embed: discord.Embed) -> bool:
+        if not embed.footer:
+            self._validate_none_footer()
+            return False
+        return True
+    
+    def _validate_none_footer(self):
+        assert self._footer_text in (_MISSING, None), "Expected to have footer text data in embed but found no " \
+                                                      "footer data."
+        assert self._footer_icon_url in (_MISSING, None), "Expected to have footer icon url data in embed but found " \
+                                                          "no footer data."
         
     def _validate_fields(self, embed: discord.Embed, match_all_if_not_set: bool,  allow_extra_fields: bool, 
                          allow_any_order: bool):
@@ -124,7 +153,9 @@ class EmbedVerifier:
             return
 
         if self._colour is _MISSING or self._colour is None:
-            assert embed.colour is None, f"Expected embed colour to be None, but was {embed.colour.value}."
+            assert embed.colour is None, f"Expected embed colour to be None, but was 0x{embed.colour.value:06X}."
             return
 
-        assert self._colour == embed.colour.value, f"Expected embed colour to be {embed.colour.value}."
+        assert embed.colour, f"Expected embed colour to be 0x{self._colour:06X}, but was None."
+        assert self._colour == embed.colour.value, f"Expected embed colour to be 0x{self._colour:06X}, " \
+                                                   f"but was 0x{embed.colour.value:06X}."

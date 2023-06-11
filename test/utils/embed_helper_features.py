@@ -117,9 +117,78 @@ class EmbedAuthorValidationFeatures:
     async def should_pass_if_author_data_present_and_using_matches_configured(self, accord_engine: accord.Engine):
         embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds")
         
-        await accord_engine.app_command("embed", author_infor=True)
+        await accord_engine.app_command("embed", author_info=True)
         
         embed_verifier.matches_configured(accord_engine.response.embed)
+        
+    async def should_throw_if_none_author_while_expecting_author_name_data(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+                                              author_name="Invalid", author_url=None, author_icon_url=None)
+        
+        await accord_engine.app_command("embed")
+        
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+            
+        assert str(exception.value) == "Expected to have author name data in embed but found no author data."
+
+    async def should_throw_if_none_author_while_expecting_author_icon_data(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+                                              author_name=None, author_url=None, author_icon_url=accord.user.avatar.url)
+
+        await accord_engine.app_command("embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have author icon url data in embed but found no author data."
+        
+    async def should_throw_if_none_author_while_expecting_author_url_data(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+                                              author_name=None, author_url="https://embed.url", author_icon_url=None)
+
+        await accord_engine.app_command("embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have author url data in embed but found no author data."
+        
+    async def should_throw_if_expecting_author_name_on_none_if_icon_and_url_set_as_missing(
+            self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+                                              author_name="Invalid")
+
+        await accord_engine.app_command("embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have author name data in embed but found no author data."
+    
+    async def should_throw_if_expecting_author_url_on_none_if_icon_and_name_set_as_missing(
+            self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+                                              author_url="https://embed.url")
+
+        await accord_engine.app_command("embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have author url data in embed but found no author data."
+        
+    async def should_throw_if_expecting_author_icon_on_none_if_url_and_name_set_as_missing(
+            self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+                                              author_icon_url=accord.user.avatar.url)
+
+        await accord_engine.app_command("embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have author icon url data in embed but found no author data."
 
         
 # noinspection PyMethodMayBeStatic
@@ -256,7 +325,7 @@ class EmbedFieldsValidationFeatures:
         
 
 # noinspection PyMethodMayBeStatic
-class OtherEmbedDataValidationFeatures:
+class ColourValidationFeatures:
     
     async def should_be_able_to_validate_embed_colour(self, accord_engine: accord.Engine):
         embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
@@ -266,4 +335,175 @@ class OtherEmbedDataValidationFeatures:
         await accord_engine.app_command("custom-embed", colour=0x000000)
         
         embed_verifier.matches_configured(accord_engine.response.embed)
+        
+    async def should_be_able_to_validate_none_colour_on_match_configured(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(colour=None)
+        
+        await accord_engine.app_command("embed")
+        
+        embed_verifier.matches_configured(accord_engine.response.embed)
+        
+    async def should_tell_in_error_message_if_wrong_colour_on_validation(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              colour=0x000001)
+        
+        await accord_engine.app_command("custom-embed", colour=0x000000)
+        
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+            
+        assert str(exception.value) == "Expected embed colour to be 0x000001, but was 0x000000."
+        
+    async def should_tell_in_error_message_if_colour_none_expected_on_validation(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              colour=None)
+
+        await accord_engine.app_command("custom-embed", colour=0x000000)
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected embed colour to be None, but was 0x000000."
+        
+    async def should_tell_in_error_message_if_colour_expected_but_was_none(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(colour=0x000000)
+
+        await accord_engine.app_command("embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_configured(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected embed colour to be 0x000000, but was None."
+        
+    async def should_support_spelling_colour_as_color(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              color=0x123456)
+        
+        await accord_engine.app_command("custom-embed", colour=0x123456)
+        
+        embed_verifier.matches_fully(accord_engine.response.embed)
+        
+    async def should_throw_accord_exception_if_both_colour_and_color_set(self):
+        with pytest.raises(accord.AccordException) as exception:
+            _ = accord.EmbedVerifier(colour=0x000000, color=0x000001)
+            
+        assert str(exception.value) == "Attempted to set both 'colour' and 'color' fields while creating an embed " \
+                                       "verifier. Please only use one of the fields."
+        
+        
+# noinspection PyMethodMayBeStatic
+class FooterValidationFeatures:
+    
+    async def should_allow_validating_footer_text_and_url(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              footer_text="Custom footer",
+                                              footer_icon_url="footer.url")
+        
+        await accord_engine.app_command("custom-embed", footer_text="Custom footer", footer_icon_url="footer.url")
+        
+        embed_verifier.matches_fully(accord_engine.response.embed)
+        
+    async def should_throw_if_incorrect_footer_text(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              footer_text="Custom footer",
+                                              footer_icon_url="footer.url")
+
+        await accord_engine.app_command("custom-embed", footer_text="Invalid footer", footer_icon_url="footer.url")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+            
+        assert str(exception.value) == "Expected field 'footer.text' to match pattern 'Custom footer', " \
+                                       "but found 'Invalid footer' instead."
+
+    async def should_throw_if_incorrect_footer_url(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              footer_text="Custom footer",
+                                              footer_icon_url="footer.url")
+
+        await accord_engine.app_command("custom-embed", footer_text="Custom footer", footer_icon_url="invalid.url")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected field 'footer.icon_url' to match pattern 'footer.url', " \
+                                       "but found 'invalid.url' instead."
+        
+    async def should_throw_if_none_footer_while_expecting_footer_text(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              footer_text="Custom footer",
+                                              footer_icon_url=None)
+
+        await accord_engine.app_command("custom-embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have footer text data in embed but found no footer data."
+        
+    async def should_throw_if_none_footer_while_expecting_footer_icon(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              footer_text=None,
+                                              footer_icon_url="footer.url")
+
+        await accord_engine.app_command("custom-embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have footer icon url data in embed but found no footer data."
+        
+    async def should_throw_if_expecting_footer_text_on_none_and_icon_set_as_missing(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              footer_text="Custom footer")
+
+        await accord_engine.app_command("custom-embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have footer text data in embed but found no footer data."
+        
+    async def should_throw_if_expecting_footer_icon_on_none_and_text_set_as_missing(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              footer_icon_url="footer.url")
+
+        await accord_engine.app_command("custom-embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have footer icon url data in embed but found no footer data."
+        
+    async def should_throw_if_expecting_footer_text_and_found_none(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(footer_text="Custom footer")
+        
+        await accord_engine.app_command("custom-embed", footer_icon_url="footer.url")
+        
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_configured(accord_engine.response.embed)
+            
+        assert str(exception.value) == "Expected field 'footer.text' to match pattern 'Custom footer', " \
+                                       "but found 'None' instead."
+
+    async def should_throw_if_expecting_footer_icon_url_and_found_none(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(footer_icon_url="footer.url")
+
+        await accord_engine.app_command("custom-embed", footer_text="Custom footer")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_configured(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected field 'footer.icon_url' to match pattern 'footer.url', " \
+                                       "but found 'None' instead."
     
