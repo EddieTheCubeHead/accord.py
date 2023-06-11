@@ -124,7 +124,7 @@ class EmbedAuthorValidationFeatures:
         
 # noinspection PyMethodMayBeStatic
 class EmbedFieldsValidationFeatures:
-    
+
     async def should_be_able_to_add_fields_as_tuples_to_verifier_and_use_them(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1", False), ("2", "Field 2", False)]
         embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",

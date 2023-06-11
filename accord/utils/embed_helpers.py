@@ -81,7 +81,7 @@ class EmbedVerifier:
             assert _compare_value(pattern, field), f"Expected field '{field_name}' to match pattern '{pattern}', but " \
                                                    f"found '{field}' instead."
         self._validate_fields(embed, match_all_if_not_set, allow_extra_fields, allow_any_field_order)
-        self._valudate_colour(embed, match_all_if_not_set)
+        self._validate_colour(embed, match_all_if_not_set)
     
     def _validate_author_existence(self, embed: discord.Embed) -> bool:
         if not embed.author:
@@ -125,5 +125,6 @@ class EmbedVerifier:
 
         if self._colour is _MISSING or self._colour is None:
             assert embed.colour is None, f"Expected embed colour to be None, but was {embed.colour.value}."
+            return
 
         assert self._colour == embed.colour.value, f"Expected embed colour to be {embed.colour.value}."
