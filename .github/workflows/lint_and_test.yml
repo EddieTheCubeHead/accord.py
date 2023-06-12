@@ -33,6 +33,6 @@ jobs:
       run: |
         pytest test
       env:
-        PYTHONPATH: /home/runner/work/engine.py/engine.py/accord/:/home/runner/work/engine.py/engine.py/test/
+        PYTHONPATH: /home/runner/work/accord.py/accord.py/accord/:/home/runner/work/accord.py/accord.py/test/
         TOKEN: ${{ secrets.TOKEN }}
         GUILD_ID: ${{ secrets.GUILD_ID }}
