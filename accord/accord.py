@@ -145,7 +145,7 @@ class Response:
         You should not instantiate :class:`accord.Response` yourself.
     """
 
-    def __init__(self, engine: Engine, message: discord_objects.Message, content: str | None, *, 
+    def __init__(self, engine: Engine, message: discord_objects.Message, content: str | None, *,
                  ephemeral: bool = False, view: discord.ui.View = None, modal: discord.ui.Modal = None):
         self._engine = engine
         self._message = message
@@ -241,7 +241,7 @@ def _build_components(modal: discord.ui.Modal) -> list[dict[typing.Any, typing.A
     
 class _ResponseCatcher:
     
-    def __init__(self, parent: discord.Interaction, engine: Engine, text_channel: discord_objects.TextChannel, 
+    def __init__(self, parent: discord.Interaction, engine: Engine, text_channel: discord_objects.TextChannel,
                  author: discord_objects.Member, message: discord_objects.Message = None):
         self._parent = parent
         self._engine = engine
