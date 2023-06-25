@@ -98,10 +98,14 @@ async def author_embed(interaction: Interaction, amount: int, inline: bool):
     
 @bot.tree.command(name="custom-embed")
 async def custom_embed(interaction: Interaction, colour: int = None, footer_text: str = None,
-                       footer_icon_url: str = None):
+                       footer_icon_url: str = None, image_url: str = None, thumbnail_url: str = None):
     to_send = discord.Embed(title="Custom embed", description="Testing other embed values", colour=colour)
     if footer_text or footer_icon_url:
         to_send.set_footer(text=footer_text, icon_url=footer_icon_url)
+    if image_url:
+        to_send.set_image(url=image_url)
+    if thumbnail_url:
+        to_send.set_thumbnail(url=thumbnail_url)
     await interaction.response.send_message(embed=to_send)
 
 

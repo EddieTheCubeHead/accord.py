@@ -506,4 +506,118 @@ class FooterValidationFeatures:
 
         assert str(exception.value) == "Expected field 'footer.icon_url' to match pattern 'footer.url', " \
                                        "but found 'None' instead."
+
+
+# noinspection PyMethodMayBeStatic
+class ImageAndThumbnailValidationFeatures:
+
+    async def should_support_validating_embed_image(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              image_url="embed_image.url")
+
+        await accord_engine.app_command("custom-embed", image_url="embed_image.url")
+
+        embed_verifier.matches_fully(accord_engine.response.embed)
+
+    async def should_throw_if_expecting_image_and_no_image_present(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              image_url="thumbnail_image.url")
+
+        await accord_engine.app_command("custom-embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have image url data in embed but found no image data."
+
+    async def should_throw_if_matching_fully_and_got_unexpected_image_data(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values")
+
+        await accord_engine.app_command("custom-embed", image_url="invalid.url")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected field 'image.url' to match pattern 'None', but found 'invalid.url' " \
+                                       "instead."
+
+    async def should_pass_if_image_present_in_embed_and_matching_only_set(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values")
+
+        await accord_engine.app_command("custom-embed", image_url="invalid.url")
+
+        embed_verifier.matches_configured(accord_engine.response.embed)
+
+    async def should_throw_if_expecting_different_image_value_while_matching_only_set(
+            self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              image_url="image.url")
+
+        await accord_engine.app_command("custom-embed", image_url="invalid.url")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected field 'image.url' to match pattern 'image.url', but found " \
+                                       "'invalid.url' instead."
+
+    async def should_support_validating_embed_thumbnail(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              thumbnail_url="thumbnail_image.url")
+
+        await accord_engine.app_command("custom-embed", thumbnail_url="thumbnail_image.url")
+
+        embed_verifier.matches_fully(accord_engine.response.embed)
+
+    async def should_throw_if_expecting_thumbnail_and_no_thumbnail_present(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              thumbnail_url="thumbnail_image.url")
+
+        await accord_engine.app_command("custom-embed")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected to have thumbnail url data in embed but found no thumbnail data."
+
+    async def should_throw_if_matching_fully_and_got_unexpected_thumbnail_data(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values")
+
+        await accord_engine.app_command("custom-embed", thumbnail_url="invalid.url")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected field 'thumbnail.url' to match pattern 'None', but found " \
+                                       "'invalid.url' instead."
+
+    async def should_pass_if_thumbnail_present_in_embed_and_matching_only_set(self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values")
+
+        await accord_engine.app_command("custom-embed", thumbnail_url="invalid.url")
+
+        embed_verifier.matches_configured(accord_engine.response.embed)
+
+    async def should_throw_if_expecting_different_thumbnail_value_while_matching_only_set(
+            self, accord_engine: accord.Engine):
+        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
+                                              description_match="Testing other embed values",
+                                              thumbnail_url="thumbnail.url")
+
+        await accord_engine.app_command("custom-embed", thumbnail_url="invalid.url")
+
+        with pytest.raises(AssertionError) as exception:
+            embed_verifier.matches_fully(accord_engine.response.embed)
+
+        assert str(exception.value) == "Expected field 'thumbnail.url' to match pattern 'thumbnail.url', but found " \
+                                       "'invalid.url' instead."
     

@@ -55,7 +55,8 @@ class EmbedVerifier:
                  author_name: str | None = _MISSING, author_icon_url: str | None = _MISSING,
                  author_url: str | None = _MISSING, fields: list[EmbedField] | None = _MISSING,
                  colour: int | None = _MISSING, color: int | None = _MISSING,
-                 footer_text: str | None = _MISSING, footer_icon_url: str | None = _MISSING):
+                 footer_text: str | None = _MISSING, footer_icon_url: str | None = _MISSING,
+                 image_url: str | None = _MISSING, thumbnail_url: str | None = _MISSING):
         self._title_match = title_match
         self._description_match = description_match
         self._author_name = author_name
@@ -63,6 +64,8 @@ class EmbedVerifier:
         self._author_url = author_url
         self._footer_text = footer_text
         self._footer_icon_url = footer_icon_url
+        self._image_url = image_url
+        self._thumbnail_url = thumbnail_url
         self._fields = fields
         if colour is _MISSING:
             self._colour = color
@@ -92,6 +95,10 @@ class EmbedVerifier:
             values += [(_get_pattern(self._footer_text, match_all_if_not_set), embed.footer.text, "footer.text"),
                        (_get_pattern(self._footer_icon_url, match_all_if_not_set), embed.footer.icon_url, 
                         "footer.icon_url")]
+        if self._validate_image_existence(embed):
+            values += [(_get_pattern(self._image_url, match_all_if_not_set), embed.image.url, "image.url")]
+        if self._validate_thumbnail_existence(embed):
+            values += [(_get_pattern(self._thumbnail_url, match_all_if_not_set), embed.thumbnail.url, "thumbnail.url")]
         for pattern, field, field_name in values:
             assert _compare_value(pattern, field), f"Expected field '{field_name}' to match pattern '{pattern}', but " \
                                                    f"found '{field}' instead."
@@ -123,6 +130,25 @@ class EmbedVerifier:
                                                       "footer data."
         assert self._footer_icon_url in (_MISSING, None), "Expected to have footer icon url data in embed but found " \
                                                           "no footer data."
+
+    def _validate_image_existence(self, embed: discord.Embed) -> bool:
+        if not embed.image:
+            self._validate_none_image()
+            return False
+        return True
+
+    def _validate_none_image(self):
+        assert self._image_url in (_MISSING, None), "Expected to have image url data in embed but found no image data."
+
+    def _validate_thumbnail_existence(self, embed: discord.Embed) -> bool:
+        if not embed.thumbnail:
+            self._validate_none_thumbnail()
+            return False
+        return True
+
+    def _validate_none_thumbnail(self):
+        assert self._thumbnail_url in (_MISSING, None), "Expected to have thumbnail url data in embed but found no " \
+                                                        "thumbnail data."
         
     def _validate_fields(self, embed: discord.Embed, match_all_if_not_set: bool,  allow_extra_fields: bool, 
                          allow_any_order: bool):
