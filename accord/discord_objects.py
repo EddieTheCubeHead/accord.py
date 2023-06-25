@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import threading
 import typing
+from unittest.mock import Mock
 
 import discord
 
@@ -77,7 +78,9 @@ class User(DiscordObject):
     def __init__(self, name: str = None, avatar: str = None, discriminator: str = None):
         super().__init__()
         self.name: str = name if name is not None else f"User {self.id}"
-        self.avatar: str = avatar if avatar is not None else f"User {self.id} avatar"
+        discord_base = "https://cdn.discordapp.com"
+        avatar_url = avatar if avatar is not None else f"{discord_base}/user_{self.id}_avatar.png"
+        self.avatar: discord.Asset = Mock(url=avatar_url, key=self.id, BASE=discord_base)
         self.discriminator: str = discriminator if discriminator is not None else str(self.id)
         
     def as_dict(self) -> dict[str, typing.Any]:

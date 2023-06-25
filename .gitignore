@@ -6,3 +6,5 @@ secrets.json
 .build/
 /dist/
 /accord/accord.py.egg-info/
+__pycache__/
+/.vscode/

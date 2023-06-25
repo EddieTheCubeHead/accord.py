@@ -1,6 +1,7 @@
 import json
 import os
 
+import discord
 # discord.py wants to be listed as discord.py in requirements, but also wants to be imported as discord
 # noinspection PyPackageRequirements
 from discord import Client, Intents, Object, Interaction
@@ -68,7 +69,7 @@ async def channel(interaction: Interaction):
 @bot.tree.command(name="user")
 async def user(interaction: Interaction):
     content = f"User name: {interaction.user.name}\n" + \
-              f"User avatar: {interaction.user.avatar}" + \
+              f"User avatar url: {interaction.user.avatar.url}" + \
               f"User discriminator: {interaction.user.discriminator}"
         
     await interaction.response.send_message(content)
@@ -77,6 +78,35 @@ async def user(interaction: Interaction):
 @bot.tree.command(name="repeat")
 async def repeat(interaction: Interaction, to_repeat: str, times: int = 2):
     await interaction.response.send_message(f"{to_repeat}\n" * times)
+    
+    
+@bot.tree.command(name="embed")
+async def embed(interaction: Interaction, author_info: bool = False):
+    to_send = discord.Embed(title="Test embed", description="An embed for testing embeds")
+    if author_info:
+        to_send.set_author(name=interaction.user.name, url="http://embed.url", icon_url=interaction.user.avatar.url)
+    await interaction.response.send_message("Here's your embed:", embed=to_send)
+
+
+@bot.tree.command(name="fields")
+async def author_embed(interaction: Interaction, amount: int, inline: bool):
+    to_send = discord.Embed(title="Fields test", description="Testing embed fields")
+    for field_number in range(1, amount + 1):
+        to_send.add_field(name=field_number, value=f"Field {field_number}", inline=inline)
+    await interaction.response.send_message(embed=to_send)
+    
+    
+@bot.tree.command(name="custom-embed")
+async def custom_embed(interaction: Interaction, colour: int = None, footer_text: str = None,
+                       footer_icon_url: str = None, image_url: str = None, thumbnail_url: str = None):
+    to_send = discord.Embed(title="Custom embed", description="Testing other embed values", colour=colour)
+    if footer_text or footer_icon_url:
+        to_send.set_footer(text=footer_text, icon_url=footer_icon_url)
+    if image_url:
+        to_send.set_image(url=image_url)
+    if thumbnail_url:
+        to_send.set_thumbnail(url=thumbnail_url)
+    await interaction.response.send_message(embed=to_send)
 
 
 class Reverser(Transformer):
