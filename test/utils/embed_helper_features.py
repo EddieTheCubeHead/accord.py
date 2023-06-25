@@ -19,7 +19,7 @@ class EmbedTitleAndDescriptionValidationFeatures:
 
     async def should_be_able_to_create_and_use_embed_verifier_objects(self, accord_engine: accord.Engine):
         description = "An embed for testing embeds"
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match=description)
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description=description)
         
         await accord_engine.app_command("embed")
         
@@ -34,7 +34,7 @@ class EmbedTitleAndDescriptionValidationFeatures:
 
     async def should_raise_assertion_error_with_message_if_incorrect_title(self, accord_engine: accord.Engine):
         description = "An embed for testing embeds"
-        embed_verifier = accord.EmbedVerifier(title_match="Incorrect embed", description_match=description)
+        embed_verifier = accord.EmbedVerifier(title="Incorrect embed", description=description)
 
         await accord_engine.app_command("embed")
 
@@ -47,7 +47,7 @@ class EmbedTitleAndDescriptionValidationFeatures:
     async def should_raise_assertion_error_with_message_if_incorrect_description(self, accord_engine: accord.Engine):
         description = "Incorrect description"
         actual_description = "An embed for testing embeds"
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match=description)
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description=description)
 
         await accord_engine.app_command("embed")
 
@@ -62,8 +62,8 @@ class EmbedTitleAndDescriptionValidationFeatures:
 class EmbedAuthorValidationFeatures:
       
     async def should_support_author_validation(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed",
-                                              description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed",
+                                              description="An embed for testing embeds",
                                               author_name=accord.user.name,
                                               author_icon_url=accord.user.avatar.url,
                                               author_url="http://embed.url")
@@ -73,8 +73,8 @@ class EmbedAuthorValidationFeatures:
         embed_verifier.matches_fully(accord_engine.response.embed)   
         
     async def should_raise_exception_if_expecting_no_author_name_but_name_present(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed",
-                                              description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed",
+                                              description="An embed for testing embeds",
                                               author_icon_url=accord.user.avatar.url,
                                               author_url="http://embed.url")
         
@@ -87,8 +87,8 @@ class EmbedAuthorValidationFeatures:
                                        f"'{accord.user.name}' instead."
 
     async def should_raise_exception_if_expecting_no_author_icon_but_icon_present(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed",
-                                              description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed",
+                                              description="An embed for testing embeds",
                                               author_name=accord.user.name,
                                               author_url="http://embed.url")
 
@@ -101,8 +101,8 @@ class EmbedAuthorValidationFeatures:
                                        f"'{accord.user.avatar.url}' instead."
         
     async def should_raise_exception_if_expecting_no_author_url_but_url_present(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed",
-                                              description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed",
+                                              description="An embed for testing embeds",
                                               author_name=accord.user.name,
                                               author_icon_url=accord.user.avatar.url)
 
@@ -115,14 +115,14 @@ class EmbedAuthorValidationFeatures:
                                        "'http://embed.url' instead."
         
     async def should_pass_if_author_data_present_and_using_matches_configured(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds")
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description="An embed for testing embeds")
         
         await accord_engine.app_command("embed", author_info=True)
         
         embed_verifier.matches_configured(accord_engine.response.embed)
         
     async def should_throw_if_none_author_while_expecting_author_name_data(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description="An embed for testing embeds",
                                               author_name="Invalid", author_url=None, author_icon_url=None)
         
         await accord_engine.app_command("embed")
@@ -133,7 +133,7 @@ class EmbedAuthorValidationFeatures:
         assert str(exception.value) == "Expected to have author name data in embed but found no author data."
 
     async def should_throw_if_none_author_while_expecting_author_icon_data(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description="An embed for testing embeds",
                                               author_name=None, author_url=None, author_icon_url=accord.user.avatar.url)
 
         await accord_engine.app_command("embed")
@@ -144,7 +144,7 @@ class EmbedAuthorValidationFeatures:
         assert str(exception.value) == "Expected to have author icon url data in embed but found no author data."
         
     async def should_throw_if_none_author_while_expecting_author_url_data(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description="An embed for testing embeds",
                                               author_name=None, author_url="https://embed.url", author_icon_url=None)
 
         await accord_engine.app_command("embed")
@@ -156,7 +156,7 @@ class EmbedAuthorValidationFeatures:
         
     async def should_throw_if_expecting_author_name_on_none_if_icon_and_url_set_as_missing(
             self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description="An embed for testing embeds",
                                               author_name="Invalid")
 
         await accord_engine.app_command("embed")
@@ -168,7 +168,7 @@ class EmbedAuthorValidationFeatures:
     
     async def should_throw_if_expecting_author_url_on_none_if_icon_and_name_set_as_missing(
             self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description="An embed for testing embeds",
                                               author_url="https://embed.url")
 
         await accord_engine.app_command("embed")
@@ -180,7 +180,7 @@ class EmbedAuthorValidationFeatures:
         
     async def should_throw_if_expecting_author_icon_on_none_if_url_and_name_set_as_missing(
             self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Test embed", description_match="An embed for testing embeds",
+        embed_verifier = accord.EmbedVerifier(title="Test embed", description="An embed for testing embeds",
                                               author_icon_url=accord.user.avatar.url)
 
         await accord_engine.app_command("embed")
@@ -196,7 +196,7 @@ class EmbedFieldsValidationFeatures:
 
     async def should_be_able_to_add_fields_as_tuples_to_verifier_and_use_them(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1", False), ("2", "Field 2", False)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
         
         await accord_engine.app_command("fields", amount=2, inline=False)
@@ -205,7 +205,7 @@ class EmbedFieldsValidationFeatures:
         
     async def should_raise_assertion_error_if_incorrect_order_while_matching_fully(self, accord_engine: accord.Engine):
         fields = [("2", "Field 2", False), ("1", "Field 1", False)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=2, inline=False)
@@ -218,7 +218,7 @@ class EmbedFieldsValidationFeatures:
         
     async def should_be_able_to_allow_any_order_when_matching_only_configured(self, accord_engine: accord.Engine):
         fields = [("2", "Field 2", False), ("1", "Field 1", False)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=2, inline=False)
@@ -227,7 +227,7 @@ class EmbedFieldsValidationFeatures:
         
     async def should_not_allow_extra_fields_if_matching_fully(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1", True), ("2", "Field 2", True)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=3, inline=True)
@@ -239,7 +239,7 @@ class EmbedFieldsValidationFeatures:
         
     async def should_raise_exception_on_missing_field_if_matching_fully(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1", False), ("2", "Field 2", False), ("3", "Field 3", False)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=2, inline=False)
@@ -251,7 +251,7 @@ class EmbedFieldsValidationFeatures:
         
     async def should_pluralise_expected_field_amount_correctly(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1", False)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=2, inline=False)
@@ -263,7 +263,7 @@ class EmbedFieldsValidationFeatures:
 
     async def should_pluralise_actual_field_amount_correctly(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1", False), ("2", "Field 2", False)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=1, inline=False)
@@ -275,7 +275,7 @@ class EmbedFieldsValidationFeatures:
         
     async def should_raise_if_missing_fields_when_matching_configured_only(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1", False), ("2", "Field 2", False), ("3", "Field 3", False)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=2, inline=False)
@@ -290,7 +290,7 @@ class EmbedFieldsValidationFeatures:
 
     async def should_be_able_to_ignore_extra_fields_when_matching_only_configured(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1", True), ("2", "Field 2", True)]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=3, inline=True)
@@ -299,7 +299,7 @@ class EmbedFieldsValidationFeatures:
         
     async def should_be_able_to_ignore_inlining_by_not_providing_a_value(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1"), ("2", "Field 2")]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
         
         await accord_engine.app_command("fields", amount=2, inline=True)
@@ -310,7 +310,7 @@ class EmbedFieldsValidationFeatures:
     
     async def should_not_give_inline_data_if_field_with_no_inline_data_fails(self, accord_engine: accord.Engine):
         fields = [("1", "Field 1"), ("2", "Field 2")]
-        embed_verifier = accord.EmbedVerifier(title_match="Fields test", description_match="Testing embed fields",
+        embed_verifier = accord.EmbedVerifier(title="Fields test", description="Testing embed fields",
                                               fields=fields)
 
         await accord_engine.app_command("fields", amount=1, inline=False)
@@ -328,8 +328,8 @@ class EmbedFieldsValidationFeatures:
 class ColourValidationFeatures:
     
     async def should_be_able_to_validate_embed_colour(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               colour=0x000000)
         
         await accord_engine.app_command("custom-embed", colour=0x000000)
@@ -344,8 +344,8 @@ class ColourValidationFeatures:
         embed_verifier.matches_configured(accord_engine.response.embed)
         
     async def should_tell_in_error_message_if_wrong_colour_on_validation(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               colour=0x000001)
         
         await accord_engine.app_command("custom-embed", colour=0x000000)
@@ -356,8 +356,8 @@ class ColourValidationFeatures:
         assert str(exception.value) == "Expected embed colour to be 0x000001, but was 0x000000."
         
     async def should_tell_in_error_message_if_colour_none_expected_on_validation(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               colour=None)
 
         await accord_engine.app_command("custom-embed", colour=0x000000)
@@ -378,8 +378,8 @@ class ColourValidationFeatures:
         assert str(exception.value) == "Expected embed colour to be 0x000000, but was None."
         
     async def should_support_spelling_colour_as_color(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               color=0x123456)
         
         await accord_engine.app_command("custom-embed", colour=0x123456)
@@ -398,8 +398,8 @@ class ColourValidationFeatures:
 class FooterValidationFeatures:
     
     async def should_allow_validating_footer_text_and_url(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               footer_text="Custom footer",
                                               footer_icon_url="footer.url")
         
@@ -408,8 +408,8 @@ class FooterValidationFeatures:
         embed_verifier.matches_fully(accord_engine.response.embed)
         
     async def should_throw_if_incorrect_footer_text(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               footer_text="Custom footer",
                                               footer_icon_url="footer.url")
 
@@ -422,8 +422,8 @@ class FooterValidationFeatures:
                                        "but found 'Invalid footer' instead."
 
     async def should_throw_if_incorrect_footer_url(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               footer_text="Custom footer",
                                               footer_icon_url="footer.url")
 
@@ -436,8 +436,8 @@ class FooterValidationFeatures:
                                        "but found 'invalid.url' instead."
         
     async def should_throw_if_none_footer_while_expecting_footer_text(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               footer_text="Custom footer",
                                               footer_icon_url=None)
 
@@ -449,8 +449,8 @@ class FooterValidationFeatures:
         assert str(exception.value) == "Expected to have footer text data in embed but found no footer data."
         
     async def should_throw_if_none_footer_while_expecting_footer_icon(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               footer_text=None,
                                               footer_icon_url="footer.url")
 
@@ -462,8 +462,8 @@ class FooterValidationFeatures:
         assert str(exception.value) == "Expected to have footer icon url data in embed but found no footer data."
         
     async def should_throw_if_expecting_footer_text_on_none_and_icon_set_as_missing(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               footer_text="Custom footer")
 
         await accord_engine.app_command("custom-embed")
@@ -474,8 +474,8 @@ class FooterValidationFeatures:
         assert str(exception.value) == "Expected to have footer text data in embed but found no footer data."
         
     async def should_throw_if_expecting_footer_icon_on_none_and_text_set_as_missing(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               footer_icon_url="footer.url")
 
         await accord_engine.app_command("custom-embed")
@@ -512,8 +512,8 @@ class FooterValidationFeatures:
 class ImageAndThumbnailValidationFeatures:
 
     async def should_support_validating_embed_image(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               image_url="embed_image.url")
 
         await accord_engine.app_command("custom-embed", image_url="embed_image.url")
@@ -521,8 +521,8 @@ class ImageAndThumbnailValidationFeatures:
         embed_verifier.matches_fully(accord_engine.response.embed)
 
     async def should_throw_if_expecting_image_and_no_image_present(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               image_url="thumbnail_image.url")
 
         await accord_engine.app_command("custom-embed")
@@ -533,8 +533,8 @@ class ImageAndThumbnailValidationFeatures:
         assert str(exception.value) == "Expected to have image url data in embed but found no image data."
 
     async def should_throw_if_matching_fully_and_got_unexpected_image_data(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values")
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values")
 
         await accord_engine.app_command("custom-embed", image_url="invalid.url")
 
@@ -545,8 +545,8 @@ class ImageAndThumbnailValidationFeatures:
                                        "instead."
 
     async def should_pass_if_image_present_in_embed_and_matching_only_set(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values")
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values")
 
         await accord_engine.app_command("custom-embed", image_url="invalid.url")
 
@@ -554,8 +554,8 @@ class ImageAndThumbnailValidationFeatures:
 
     async def should_throw_if_expecting_different_image_value_while_matching_only_set(
             self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               image_url="image.url")
 
         await accord_engine.app_command("custom-embed", image_url="invalid.url")
@@ -567,8 +567,8 @@ class ImageAndThumbnailValidationFeatures:
                                        "'invalid.url' instead."
 
     async def should_support_validating_embed_thumbnail(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               thumbnail_url="thumbnail_image.url")
 
         await accord_engine.app_command("custom-embed", thumbnail_url="thumbnail_image.url")
@@ -576,8 +576,8 @@ class ImageAndThumbnailValidationFeatures:
         embed_verifier.matches_fully(accord_engine.response.embed)
 
     async def should_throw_if_expecting_thumbnail_and_no_thumbnail_present(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               thumbnail_url="thumbnail_image.url")
 
         await accord_engine.app_command("custom-embed")
@@ -588,8 +588,8 @@ class ImageAndThumbnailValidationFeatures:
         assert str(exception.value) == "Expected to have thumbnail url data in embed but found no thumbnail data."
 
     async def should_throw_if_matching_fully_and_got_unexpected_thumbnail_data(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values")
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values")
 
         await accord_engine.app_command("custom-embed", thumbnail_url="invalid.url")
 
@@ -600,8 +600,8 @@ class ImageAndThumbnailValidationFeatures:
                                        "'invalid.url' instead."
 
     async def should_pass_if_thumbnail_present_in_embed_and_matching_only_set(self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values")
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values")
 
         await accord_engine.app_command("custom-embed", thumbnail_url="invalid.url")
 
@@ -609,8 +609,8 @@ class ImageAndThumbnailValidationFeatures:
 
     async def should_throw_if_expecting_different_thumbnail_value_while_matching_only_set(
             self, accord_engine: accord.Engine):
-        embed_verifier = accord.EmbedVerifier(title_match="Custom embed",
-                                              description_match="Testing other embed values",
+        embed_verifier = accord.EmbedVerifier(title="Custom embed",
+                                              description="Testing other embed values",
                                               thumbnail_url="thumbnail.url")
 
         await accord_engine.app_command("custom-embed", thumbnail_url="invalid.url")

@@ -411,7 +411,7 @@ class Engine:
             Accepts *args and **kwargs to be sent to the command.
             
         Raises:
-            :exc:`accord.AccordException`: on guild/channel mismatch or if channel is not given and guild does not have 
+            :exc:`accord.AccordException`: on guild/channel mismatch or if channel is not given and guild does not have
                 a default channel
         
         Args:

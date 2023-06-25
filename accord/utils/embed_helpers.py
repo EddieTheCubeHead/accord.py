@@ -30,6 +30,11 @@ def _get_pattern(field: str | None | _NoneSentinel, match_all_if_not_set: bool) 
 
 
 EmbedField = tuple[str | None, str | None, bool] | tuple[str | None, str | None]
+"""A type representing a tuple containing embed field data.
+
+The first two fields represent the name and value of the field and are mandatory. Last field is optional and represents
+the inline-status of the tuple. First two fields are optional strings, the last field should be bool if present.
+"""
 
 
 def _find_embed_field(expected_field: EmbedField, fields: list[typing.Any],
@@ -50,15 +55,40 @@ def _find_embed_field(expected_field: EmbedField, fields: list[typing.Any],
 
 
 class EmbedVerifier:
+    """A class for verifying embeds created with :mod:`discord.py`
+
+    You can verify that the embed is exactly identical to the constructed verifier object with :meth:`matches_fully` or
+    that all configured fields are identical with :meth:`matches_configured`.
+
+    Attention:
+        All text-based fields are regex based.
+            If you need regex characters, please escape them. Disabling
+            regex based validation should be possible at some point in the future.
+
+    Keyword Args:
+        title (str | None): The regex validation match for the title of the embed.
+        description (str | None): The regex validation match for the description of the embed.
+        author_name (str | None): The regex validation match for the name of the author of the embed.
+        author_icon_url (str | None): The regex validation match for the icon url of the author of the embed.
+        author_url (str | None): The regex validation match for the url of the author of the embed.
+        colour (int | None): Numeric validation match for the hex-based colour of the embed.
+        color (str | None): US-english based alias for :attr:`colour`
+        footer_text (str | None): The regex validation match for the footer text of the embed.
+        footer_icon_url (str | None): The regex validation match for the icon url of the footer of the embed.
+        image_url (str | None): The regex validation match for the image url of the embed.
+        thumbnail_url (str | None): The regex validation match for the thumbnail url of the embed.
+        fields (Iterable[EmbedField]): An iterable containing :obj:`EmbedField` tuples representing the fields of the
+            embed.
+    """
     
-    def __init__(self, *, title_match: str | None = _MISSING, description_match: str | None = _MISSING,
+    def __init__(self, *, title: str | None = _MISSING, description: str | None = _MISSING,
                  author_name: str | None = _MISSING, author_icon_url: str | None = _MISSING,
-                 author_url: str | None = _MISSING, fields: list[EmbedField] | None = _MISSING,
-                 colour: int | None = _MISSING, color: int | None = _MISSING,
+                 author_url: str | None = _MISSING, colour: int | None = _MISSING, color: int | None = _MISSING,
                  footer_text: str | None = _MISSING, footer_icon_url: str | None = _MISSING,
-                 image_url: str | None = _MISSING, thumbnail_url: str | None = _MISSING):
-        self._title_match = title_match
-        self._description_match = description_match
+                 image_url: str | None = _MISSING, thumbnail_url: str | None = _MISSING,
+                 fields: typing.Iterable[EmbedField] | None = _MISSING, ):
+        self._title = title
+        self._description = description
         self._author_name = author_name
         self._author_icon_url = author_icon_url
         self._author_url = author_url
@@ -76,16 +106,36 @@ class EmbedVerifier:
             self._colour = colour
         
     def matches_fully(self, embed: discord.Embed):
+        """A method to verify given embed fully matches the configuration of the :obj:`EmbedVerifier`.
+
+        This means all fields not explicitly set are expected to be :obj:`None` for verification purposes.
+
+        Args:
+            embed: The embed to verify.
+        """
         self._matches(embed, False, False, False)
 
     def matches_configured(self, embed: discord.Embed, *, allow_extra_fields: bool = False, 
                            allow_any_field_order: bool = False):
+        """A method to verify given embed matches the configured fields of the :obj:`EmbedVerifier`.
+
+        This means all fields not explicitly set are ignored for verification purposes.
+
+        Args:
+            embed: The embed to verify.
+
+        Keyword Args:
+            allow_extra_fields: Whether more fields are allowed to be present than originally configured. If fields are
+                not configured, any number of fields are accepted. Defaults to :obj:`False`
+            allow_any_field_order: Whether the configured fields should be allowed to exist in any order. Defaults to
+                :obj:`False`
+        """
         self._matches(embed, True, allow_extra_fields, allow_any_field_order)
 
     def _matches(self, embed: discord.Embed, match_all_if_not_set: bool, allow_extra_fields: bool, 
                  allow_any_field_order: bool):
-        values = [(_get_pattern(self._title_match, match_all_if_not_set), embed.title, "title"),
-                  (_get_pattern(self._description_match, match_all_if_not_set), embed.description, "description")]
+        values = [(_get_pattern(self._title, match_all_if_not_set), embed.title, "title"),
+                  (_get_pattern(self._description, match_all_if_not_set), embed.description, "description")]
         if self._validate_author_existence(embed):
             values += [(_get_pattern(self._author_name, match_all_if_not_set), embed.author.name, "author.name"),
                        (_get_pattern(self._author_icon_url, match_all_if_not_set), embed.author.icon_url, 
@@ -153,7 +203,7 @@ class EmbedVerifier:
     def _validate_fields(self, embed: discord.Embed, match_all_if_not_set: bool,  allow_extra_fields: bool, 
                          allow_any_order: bool):
         if self._fields is _MISSING:
-            self._fields = [] if allow_extra_fields else None
+            self._fields = () if allow_extra_fields else None
         
         if self._fields is None:
             assert len(embed.fields) == 0, f"Expected to find no fields in embed, but found {len(embed.fields)} fields."

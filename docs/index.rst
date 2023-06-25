@@ -20,3 +20,4 @@ functionalities:
 
     engine
     discord_objects
+    embed_helpers
