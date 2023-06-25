@@ -1,5 +1,5 @@
 """
-engine.py - an acceptance testing library for discord.py
+accord.py - an acceptance testing library for discord.py
 
 :copyright: (c) 2023-present Eetu Asikainen
 :license: MIT

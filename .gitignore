@@ -7,3 +7,4 @@ secrets.json
 /dist/
 /accord/accord.py.egg-info/
 __pycache__/
+/.vscode/
