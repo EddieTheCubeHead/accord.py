@@ -14,7 +14,9 @@ accordingly. The following are my current minimum feature requirements for movin
  - [x] Should be able to send app commands to the bot
  - [ ] Should be able to send discord events to the bot
  - [ ] Should provide the created mock data on fetches
- - [ ] Should have helpers for embeds, mentions and other common concepts of discord.py
+ - [x] Should have helpers for embeds, mentions and other common concepts of discord.py
+   - The helper doesn't currently fully cover embeds. Video, timestamp and local file attachment verification are not 
+     supported. The current feature set is fine enough for beta, more features will be added later.
  - [x] Should have API-documentation automatically generated from docstrings
  - [ ] Should have hand-made tutorial(s) and quickstart
 
