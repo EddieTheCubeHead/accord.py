@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embed verification &mdash; accord.py 0.0.2 - alpha documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://eddiethecubehead.github.io/accord.py/embed_helpers.html" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Mock objects" href="discord_objects.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            accord.py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="engine.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="discord_objects.html">Mock objects</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Embed verification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#utils.embed_helpers.EmbedField"><code class="docutils literal notranslate"><span class="pre">EmbedField</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utils.embed_helpers.EmbedVerifier"><code class="docutils literal notranslate"><span class="pre">EmbedVerifier</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#utils.embed_helpers.EmbedVerifier.matches_configured"><code class="docutils literal notranslate"><span class="pre">EmbedVerifier.matches_configured()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utils.embed_helpers.EmbedVerifier.matches_fully"><code class="docutils literal notranslate"><span class="pre">EmbedVerifier.matches_fully()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">accord.py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Embed verification</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/embed_helpers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-utils.embed_helpers">
+<span id="embed-verification"></span><h1>Embed verification<a class="headerlink" href="#module-utils.embed_helpers" title="Permalink to this heading"></a></h1>
+<dl class="py data">
+<dt class="sig sig-object py" id="utils.embed_helpers.EmbedField">
+<span class="sig-prename descclassname"><span class="pre">utils.embed_helpers.</span></span><span class="sig-name descname"><span class="pre">EmbedField</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">tuple[str</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">bool]</span> <span class="pre">|</span> <span class="pre">tuple[str</span> <span class="pre">|</span> <span class="pre">None,</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None]</span></em><a class="headerlink" href="#utils.embed_helpers.EmbedField" title="Permalink to this definition"></a></dt>
+<dd><p>A type representing a tuple containing embed field data.</p>
+<p>The first two fields represent the name and value of the field and are mandatory. Last field is optional and represents
+the inline-status of the tuple. First two fields are optional strings, the last field should be bool if present.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.embed_helpers.EmbedVerifier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.embed_helpers.</span></span><span class="sig-name descname"><span class="pre">EmbedVerifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_name:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_icon_url:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_url:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">footer_text:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">footer_icon_url:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_url:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thumbnail_url:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields:</span> <span class="pre">~typing.Iterable[tuple[str</span> <span class="pre">|</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool]</span> <span class="pre">|</span> <span class="pre">tuple[str</span> <span class="pre">|</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span> <span class="pre">|</span> <span class="pre">None]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;utils.embed_helpers._NoneSentinel</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.embed_helpers.EmbedVerifier" title="Permalink to this definition"></a></dt>
+<dd><p>A class for verifying embeds created with <code class="xref py py-mod docutils literal notranslate"><span class="pre">discord.py</span></code></p>
+<p>You can verify that the embed is exactly identical to the constructed verifier object with <a class="reference internal" href="#utils.embed_helpers.EmbedVerifier.matches_fully" title="utils.embed_helpers.EmbedVerifier.matches_fully"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matches_fully()</span></code></a> or
+that all configured fields are identical with <a class="reference internal" href="#utils.embed_helpers.EmbedVerifier.matches_configured" title="utils.embed_helpers.EmbedVerifier.matches_configured"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matches_configured()</span></code></a>.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<dl class="simple">
+<dt>All text-based fields are regex based.</dt><dd><p>If you need regex characters, please escape them. Disabling
+regex based validation should be possible at some point in the future.</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the title of the embed.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the description of the embed.</p></li>
+<li><p><strong>author_name</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the name of the author of the embed.</p></li>
+<li><p><strong>author_icon_url</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the icon url of the author of the embed.</p></li>
+<li><p><strong>author_url</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the url of the author of the embed.</p></li>
+<li><p><strong>colour</strong> (<em>int</em><em> | </em><em>None</em>) – Numeric validation match for the hex-based colour of the embed.</p></li>
+<li><p><strong>color</strong> (<em>str</em><em> | </em><em>None</em>) – US-english based alias for <code class="xref py py-attr docutils literal notranslate"><span class="pre">colour</span></code></p></li>
+<li><p><strong>footer_text</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the footer text of the embed.</p></li>
+<li><p><strong>footer_icon_url</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the icon url of the footer of the embed.</p></li>
+<li><p><strong>image_url</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the image url of the embed.</p></li>
+<li><p><strong>thumbnail_url</strong> (<em>str</em><em> | </em><em>None</em>) – The regex validation match for the thumbnail url of the embed.</p></li>
+<li><p><strong>fields</strong> (<em>Iterable</em><em>[</em><a class="reference internal" href="#utils.embed_helpers.EmbedField" title="utils.embed_helpers.EmbedField"><em>EmbedField</em></a><em>]</em>) – An iterable containing <a class="reference internal" href="#utils.embed_helpers.EmbedField" title="utils.embed_helpers.EmbedField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmbedField</span></code></a> tuples representing the fields of the
+embed.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.embed_helpers.EmbedVerifier.matches_configured">
+<span class="sig-name descname"><span class="pre">matches_configured</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Embed</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_extra_fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_any_field_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.embed_helpers.EmbedVerifier.matches_configured" title="Permalink to this definition"></a></dt>
+<dd><p>A method to verify given embed matches the configured fields of the <a class="reference internal" href="#utils.embed_helpers.EmbedVerifier" title="utils.embed_helpers.EmbedVerifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmbedVerifier</span></code></a>.</p>
+<p>This means all fields not explicitly set are ignored for verification purposes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>embed</strong> – The embed to verify.</p>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>allow_extra_fields</strong> – Whether more fields are allowed to be present than originally configured. If fields are
+not configured, any number of fields are accepted. Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>allow_any_field_order</strong> – Whether the configured fields should be allowed to exist in any order. Defaults to
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.embed_helpers.EmbedVerifier.matches_fully">
+<span class="sig-name descname"><span class="pre">matches_fully</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Embed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.embed_helpers.EmbedVerifier.matches_fully" title="Permalink to this definition"></a></dt>
+<dd><p>A method to verify given embed fully matches the configuration of the <a class="reference internal" href="#utils.embed_helpers.EmbedVerifier" title="utils.embed_helpers.EmbedVerifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmbedVerifier</span></code></a>.</p>
+<p>This means all fields not explicitly set are expected to be <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> for verification purposes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>embed</strong> – The embed to verify.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="discord_objects.html" class="btn btn-neutral float-left" title="Mock objects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Eetu Asikainen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

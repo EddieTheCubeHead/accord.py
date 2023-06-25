@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API reference &mdash; accord.py 0.0.2 - alpha documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://eddiethecubehead.github.io/accord.py/engine.html" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Mock objects" href="discord_objects.html" />
+    <link rel="prev" title="Accord.py" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            accord.py
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#engine.AccordException"><code class="docutils literal notranslate"><span class="pre">AccordException</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.Engine"><code class="docutils literal notranslate"><span class="pre">Engine</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Engine.client"><code class="docutils literal notranslate"><span class="pre">Engine.client</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Engine.command_tree"><code class="docutils literal notranslate"><span class="pre">Engine.command_tree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Engine.app_command"><code class="docutils literal notranslate"><span class="pre">Engine.app_command()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Engine.clear_responses"><code class="docutils literal notranslate"><span class="pre">Engine.clear_responses()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Engine.get_response"><code class="docutils literal notranslate"><span class="pre">Engine.get_response()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Engine.response"><code class="docutils literal notranslate"><span class="pre">Engine.response</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.Response"><code class="docutils literal notranslate"><span class="pre">Response</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.content"><code class="docutils literal notranslate"><span class="pre">Response.content</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.ephemeral"><code class="docutils literal notranslate"><span class="pre">Response.ephemeral</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.view"><code class="docutils literal notranslate"><span class="pre">Response.view</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.modal"><code class="docutils literal notranslate"><span class="pre">Response.modal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.embed"><code class="docutils literal notranslate"><span class="pre">Response.embed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.activate_button"><code class="docutils literal notranslate"><span class="pre">Response.activate_button()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.button"><code class="docutils literal notranslate"><span class="pre">Response.button</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.get_button"><code class="docutils literal notranslate"><span class="pre">Response.get_button()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.modal_input"><code class="docutils literal notranslate"><span class="pre">Response.modal_input()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine.Response.submit_modal"><code class="docutils literal notranslate"><span class="pre">Response.submit_modal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.client_user"><code class="docutils literal notranslate"><span class="pre">client_user</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.create_engine"><code class="docutils literal notranslate"><span class="pre">create_engine()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.create_guild"><code class="docutils literal notranslate"><span class="pre">create_guild()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.create_text_channel"><code class="docutils literal notranslate"><span class="pre">create_text_channel()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.create_user"><code class="docutils literal notranslate"><span class="pre">create_user()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.default_guild_id"><code class="docutils literal notranslate"><span class="pre">default_guild_id</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.default_text_channel_ids"><code class="docutils literal notranslate"><span class="pre">default_text_channel_ids</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.default_user_id"><code class="docutils literal notranslate"><span class="pre">default_user_id</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.guild"><code class="docutils literal notranslate"><span class="pre">guild</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.guilds"><code class="docutils literal notranslate"><span class="pre">guilds</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.member"><code class="docutils literal notranslate"><span class="pre">member</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.members"><code class="docutils literal notranslate"><span class="pre">members</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.text_channel"><code class="docutils literal notranslate"><span class="pre">text_channel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.text_channels"><code class="docutils literal notranslate"><span class="pre">text_channels</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.user"><code class="docutils literal notranslate"><span class="pre">user</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#engine.users"><code class="docutils literal notranslate"><span class="pre">users</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="discord_objects.html">Mock objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="embed_helpers.html">Embed verification</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">accord.py</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/engine.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-engine">
+<span id="api-reference"></span><h1>API reference<a class="headerlink" href="#module-engine" title="Permalink to this heading"></a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="engine.AccordException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">AccordException</span></span><a class="headerlink" href="#engine.AccordException" title="Permalink to this definition"></a></dt>
+<dd><p>Exception thrown by engine.py, subclasses <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code> with no interface changes</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engine.Engine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">Engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CommandTree</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#engine.Engine" title="Permalink to this definition"></a></dt>
+<dd><p>The engine that is responsible for running commands and events against the client under test.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should not instantiate <code class="xref py py-class docutils literal notranslate"><span class="pre">accord.Engine</span></code> manually, instead the <code class="xref py py-meth docutils literal notranslate"><span class="pre">accord.create_engine()</span></code> method
+should be used.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engine.Engine.client">
+<span class="sig-name descname"><span class="pre">client</span></span><a class="headerlink" href="#engine.Engine.client" title="Permalink to this definition"></a></dt>
+<dd><p>The client under test</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engine.Engine.command_tree">
+<span class="sig-name descname"><span class="pre">command_tree</span></span><a class="headerlink" href="#engine.Engine.command_tree" title="Permalink to this definition"></a></dt>
+<dd><p>The command tree of the client. Can be <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> if you are not testing application commands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engine.Engine.app_command">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">app_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_guild</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.Guild" title="discord_objects.Guild"><span class="pre">Guild</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">issuer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.User" title="discord_objects.User"><span class="pre">User</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.TextChannel" title="discord_objects.TextChannel"><span class="pre">TextChannel</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#engine.Engine.app_command" title="Permalink to this definition"></a></dt>
+<dd><p>A coroutine to send an application command to the client.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Accepts <a href="#id1"><span class="problematic" id="id2">*</span></a>args and <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs to be sent to the command.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>accord.AccordException</strong> – on guild/channel mismatch or if channel is not given and guild does not have
+    a default channel</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>command_name</strong> – The name of the command to be run</p>
+</dd>
+<dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command_guild</strong> – The guild or the id of the guild the command should be run on. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses the default
+guild (see <a class="reference internal" href="#engine.guild" title="engine.guild"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guild</span></code></a>). Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>issuer</strong> – The user or the id of the user issuing the command. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses the default member (see
+<a class="reference internal" href="#engine.member" title="engine.member"><code class="xref py py-attr docutils literal notranslate"><span class="pre">member</span></code></a>). Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>channel</strong> – The channel of the id of the channel the command is issued on. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses the default text
+channel (see <a class="reference internal" href="#engine.text_channel" title="engine.text_channel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">text_channel</span></code></a>). Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engine.Engine.clear_responses">
+<span class="sig-name descname"><span class="pre">clear_responses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.Engine.clear_responses" title="Permalink to this definition"></a></dt>
+<dd><p>A method for clearing the response list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engine.Engine.get_response">
+<span class="sig-name descname"><span class="pre">get_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#engine.Response" title="engine.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#engine.Engine.get_response" title="Permalink to this definition"></a></dt>
+<dd><p>A method for getting a <a class="reference internal" href="#engine.Response" title="engine.Response"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Response</span></code></a> in the specified index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> – The index of the response</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The <a class="reference internal" href="#engine.Response" title="engine.Response"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Response</span></code></a> in the specified index.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engine.Engine.response">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">response</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#engine.Response" title="engine.Response"><span class="pre">Response</span></a></em><a class="headerlink" href="#engine.Engine.response" title="Permalink to this definition"></a></dt>
+<dd><p>A property representing the newest response sent by the client</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engine.Response">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#engine.Engine" title="engine.Engine"><span class="pre">Engine</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="discord_objects.html#discord_objects.Message" title="discord_objects.Message"><span class="pre">Message</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ephemeral</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">View</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Modal</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Embed</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#engine.Response" title="Permalink to this definition"></a></dt>
+<dd><p>A class representing an interaction response sent by the client under testing</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should not instantiate <code class="xref py py-class docutils literal notranslate"><span class="pre">accord.Response</span></code> yourself.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engine.Response.content">
+<span class="sig-name descname"><span class="pre">content</span></span><a class="headerlink" href="#engine.Response.content" title="Permalink to this definition"></a></dt>
+<dd><p>The content of the message</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engine.Response.ephemeral">
+<span class="sig-name descname"><span class="pre">ephemeral</span></span><a class="headerlink" href="#engine.Response.ephemeral" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the response is only visible to the user who caused the interaction</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engine.Response.view">
+<span class="sig-name descname"><span class="pre">view</span></span><a class="headerlink" href="#engine.Response.view" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">discord.ui.View</span></code> associated with the response, if any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engine.Response.modal">
+<span class="sig-name descname"><span class="pre">modal</span></span><a class="headerlink" href="#engine.Response.modal" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">discord.ui.Modal</span></code> associated with the response, if any</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engine.Response.embed">
+<span class="sig-name descname"><span class="pre">embed</span></span><a class="headerlink" href="#engine.Response.embed" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">discord.Embed</span></code> associated with the response, if any</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engine.Response.activate_button">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">activate_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#engine.Response.activate_button" title="Permalink to this definition"></a></dt>
+<dd><p>A coroutine to activate (click) a button on the view associated with the response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>button</strong> – The index or label of the button to activate. Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engine.Response.button">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">button</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Button</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#engine.Response.button" title="Permalink to this definition"></a></dt>
+<dd><p>A property returning the <em>first</em> button of the view associated with the response, if available</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Returns <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> if response has no view or the view has no buttons.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engine.Response.get_button">
+<span class="sig-name descname"><span class="pre">get_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Button</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#engine.Response.get_button" title="Permalink to this definition"></a></dt>
+<dd><p>A method to get a button from the view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>button</strong> – The index or label of the button to get. Defaults to <code class="docutils literal notranslate"><span class="pre">0</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">discord_objects.Button</span></code> if button found, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engine.Response.modal_input">
+<span class="sig-name descname"><span class="pre">modal_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modal_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#engine.Response" title="engine.Response"><span class="pre">Response</span></a></span></span><a class="headerlink" href="#engine.Response.modal_input" title="Permalink to this definition"></a></dt>
+<dd><p>A method to send input to a text input field in a modal associated with the response.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Does nothing if the specified field is not found in the modal</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modal_field</strong> – the name of the field that should be filled with the given value</p></li>
+<li><p><strong>value</strong> – The value to be set to the given field</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the <code class="xref py py-obj docutils literal notranslate"><span class="pre">accord.Response</span></code> for chaining</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engine.Response.submit_modal">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">submit_modal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.Response.submit_modal" title="Permalink to this definition"></a></dt>
+<dd><p>A coroutine that submits the modal associated with the response.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.client_user">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">client_user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.User" title="discord_objects.User"><span class="pre">User</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;discord_objects.User</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#engine.client_user" title="Permalink to this definition"></a></dt>
+<dd><p>An user object representing the client being tested</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engine.create_engine">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">create_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command_tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CommandTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#engine.Engine" title="engine.Engine"><span class="pre">Engine</span></a></span></span><a class="headerlink" href="#engine.create_engine" title="Permalink to this definition"></a></dt>
+<dd><p>A method to create an <code class="xref py py-class docutils literal notranslate"><span class="pre">accord.Engine</span></code> instance to be used with testing.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should not instantiate <code class="xref py py-class docutils literal notranslate"><span class="pre">accord.Engine</span></code> manually, instead this method should be used.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – The client that the engine should run against</p></li>
+<li><p><strong>command_tree</strong> – The command tree of the client</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An engine instance that can be used to run commands or events on the client</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engine.create_guild">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">create_guild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_default_channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="discord_objects.html#discord_objects.Guild" title="discord_objects.Guild"><span class="pre">Guild</span></a></span></span><a class="headerlink" href="#engine.create_guild" title="Permalink to this definition"></a></dt>
+<dd><p>A method for creating a new mock guild.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should not instantiate <a class="reference internal" href="discord_objects.html#discord_objects.Guild" title="discord_objects.Guild"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.Guild</span></code></a> manually, instead this method should be used.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Guild id is generated automatically</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the guild to be created. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses <code class="docutils literal notranslate"><span class="pre">Guild</span> <span class="pre">{id}</span></code>. Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>create_default_channel</strong> – Whether to create a default text channel for the guild. Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created <a class="reference internal" href="discord_objects.html#discord_objects.Guild" title="discord_objects.Guild"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.Guild</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engine.create_text_channel">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">create_text_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_guild</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.Guild" title="discord_objects.Guild"><span class="pre">Guild</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="discord_objects.html#discord_objects.TextChannel" title="discord_objects.TextChannel"><span class="pre">TextChannel</span></a></span></span><a class="headerlink" href="#engine.create_text_channel" title="Permalink to this definition"></a></dt>
+<dd><p>A method for creating a new mock channel</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should not instantiate <a class="reference internal" href="discord_objects.html#discord_objects.TextChannel" title="discord_objects.TextChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.TextChannel</span></code></a> manually, instead this method should be used.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>TextChannel id is generated automatically</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel_guild</strong> – The guild object or the id of the guild the channel should belong to. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses the
+default guild (see: <a class="reference internal" href="#engine.guild" title="engine.guild"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guild</span></code></a>). Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>name</strong> – The name of the text channel to be created. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses <code class="docutils literal notranslate"><span class="pre">Text</span> <span class="pre">channel</span> <span class="pre">{id}</span></code>. Defaults to
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created <a class="reference internal" href="discord_objects.html#discord_objects.TextChannel" title="discord_objects.TextChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.TextChannel</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engine.create_user">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">create_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avatar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#engine.create_user" title="Permalink to this definition"></a></dt>
+<dd><p>A method for creating a new mock user</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should not instantiate <a class="reference internal" href="discord_objects.html#discord_objects.User" title="discord_objects.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.User</span></code></a> manually, instead this method should be used.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>User id is generated automatically</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the user to be created. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses <code class="docutils literal notranslate"><span class="pre">User</span> <span class="pre">{id}</span></code>. Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>avatar</strong> – The avatar url of the user to be created. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses <code class="docutils literal notranslate"><span class="pre">User</span> <span class="pre">{id}</span> <span class="pre">avatar</span></code>. Defaults to
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>discriminator</strong> – The discriminator of the user to be created. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> uses <code class="docutils literal notranslate"><span class="pre">{id}</span></code>. Defaults to <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created <a class="reference internal" href="discord_objects.html#discord_objects.User" title="discord_objects.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.User</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.default_guild_id">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">default_guild_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#engine.default_guild_id" title="Permalink to this definition"></a></dt>
+<dd><p>A value containing the id of the default guild</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.default_text_channel_ids">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">default_text_channel_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{6:</span> <span class="pre">10}</span></em><a class="headerlink" href="#engine.default_text_channel_ids" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary containing the default text channel ids for each guild, mapped by guild id</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.default_user_id">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">default_user_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#engine.default_user_id" title="Permalink to this definition"></a></dt>
+<dd><p>A value containing the id of the default user</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.guild">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">guild</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.Guild" title="discord_objects.Guild"><span class="pre">Guild</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;discord_objects.Guild</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#engine.guild" title="Permalink to this definition"></a></dt>
+<dd><p>The default mock guild used for operations with engine.py</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.guilds">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">guilds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.Guild" title="discord_objects.Guild"><span class="pre">discord_objects.Guild</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{6:</span> <span class="pre">&lt;discord_objects.Guild</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#engine.guilds" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary containing all created mock guilds, mapped by id</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.member">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">member</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.Member" title="discord_objects.Member"><span class="pre">Member</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;discord_objects.Member</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#engine.member" title="Permalink to this definition"></a></dt>
+<dd><p>A member object based on the relation of the default user and the default guild</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.members">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">members</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict[(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'int'&gt;),</span> <span class="pre">discord_objects.Member]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{(7,</span> <span class="pre">6):</span> <span class="pre">&lt;discord_objects.Member</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#engine.members" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary containing all configured member mappings.</p>
+<p>Mapped by a tuple of (user_id, guild_id). A member object is only created when an user is used with a guild for the
+first time.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.text_channel">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">text_channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.TextChannel" title="discord_objects.TextChannel"><span class="pre">TextChannel</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;discord_objects.TextChannel</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#engine.text_channel" title="Permalink to this definition"></a></dt>
+<dd><p>The default mock text channel used for operations with engine.py</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.text_channels">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">text_channels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.TextChannel" title="discord_objects.TextChannel"><span class="pre">discord_objects.TextChannel</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{10:</span> <span class="pre">&lt;discord_objects.TextChannel</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#engine.text_channels" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary containing all mock text channels, mapped by id</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.user">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">user</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.User" title="discord_objects.User"><span class="pre">User</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;discord_objects.User</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#engine.user" title="Permalink to this definition"></a></dt>
+<dd><p>The default mock user used for operations with engine.py</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="engine.users">
+<span class="sig-prename descclassname"><span class="pre">engine.</span></span><span class="sig-name descname"><span class="pre">users</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="discord_objects.html#discord_objects.User" title="discord_objects.User"><span class="pre">discord_objects.User</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{7:</span> <span class="pre">&lt;discord_objects.User</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#engine.users" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary containing all created mock users, mapped by id</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Accord.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="discord_objects.html" class="btn btn-neutral float-right" title="Mock objects" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Eetu Asikainen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

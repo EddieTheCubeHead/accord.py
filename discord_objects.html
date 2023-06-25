@@ -20,7 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="API reference" href="accord.html" /> 
+    <link rel="next" title="Embed verification" href="embed_helpers.html" />
+    <link rel="prev" title="API reference" href="engine.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,8 +45,43 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="accord.html">API reference</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Mock objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.html">API reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Mock objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#discord_objects.DiscordObject"><code class="docutils literal notranslate"><span class="pre">DiscordObject</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.DiscordObject.id"><code class="docutils literal notranslate"><span class="pre">DiscordObject.id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#discord_objects.Guild"><code class="docutils literal notranslate"><span class="pre">Guild</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.Guild.name"><code class="docutils literal notranslate"><span class="pre">Guild.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.Guild.as_dict"><code class="docutils literal notranslate"><span class="pre">Guild.as_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#discord_objects.Member"><code class="docutils literal notranslate"><span class="pre">Member</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.Member.guild"><code class="docutils literal notranslate"><span class="pre">Member.guild</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.Member.user"><code class="docutils literal notranslate"><span class="pre">Member.user</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#discord_objects.Message"><code class="docutils literal notranslate"><span class="pre">Message</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.Message.text_channel"><code class="docutils literal notranslate"><span class="pre">Message.text_channel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.Message.author"><code class="docutils literal notranslate"><span class="pre">Message.author</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.Message.interaction"><code class="docutils literal notranslate"><span class="pre">Message.interaction</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#discord_objects.TextChannel"><code class="docutils literal notranslate"><span class="pre">TextChannel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.TextChannel.guild"><code class="docutils literal notranslate"><span class="pre">TextChannel.guild</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.TextChannel.name"><code class="docutils literal notranslate"><span class="pre">TextChannel.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#discord_objects.User"><code class="docutils literal notranslate"><span class="pre">User</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.User.name"><code class="docutils literal notranslate"><span class="pre">User.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.User.avatar"><code class="docutils literal notranslate"><span class="pre">User.avatar</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.User.discriminator"><code class="docutils literal notranslate"><span class="pre">User.discriminator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discord_objects.User.as_dict"><code class="docutils literal notranslate"><span class="pre">User.as_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="embed_helpers.html">Embed verification</a></li>
 </ul>
 
         </div>
@@ -72,15 +108,179 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="mock-objects">
-<h1>Mock objects<a class="headerlink" href="#mock-objects" title="Permalink to this heading"></a></h1>
+  <section id="module-discord_objects">
+<span id="mock-objects"></span><h1>Mock objects<a class="headerlink" href="#module-discord_objects" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="discord_objects.DiscordObject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">discord_objects.</span></span><span class="sig-name descname"><span class="pre">DiscordObject</span></span><a class="headerlink" href="#discord_objects.DiscordObject" title="Permalink to this definition"></a></dt>
+<dd><p>Base class for mocked discord objects.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should never instantiate a raw <a class="reference internal" href="#discord_objects.DiscordObject" title="discord_objects.DiscordObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.DiscordObject</span></code></a> manually. Instead, use the
+<code class="docutils literal notranslate"><span class="pre">create_{object}</span></code> methods like <code class="xref py py-meth docutils literal notranslate"><span class="pre">accord.create_guild()</span></code> in the main <code class="xref py py-mod docutils literal notranslate"><span class="pre">accord</span></code> module.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.DiscordObject.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#discord_objects.DiscordObject.id" title="Permalink to this definition"></a></dt>
+<dd><p>The id of the object. Always generated automatically. Not currently in snowflake format, just a raw
+<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="discord_objects.Guild">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">discord_objects.</span></span><span class="sig-name descname"><span class="pre">Guild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#discord_objects.Guild" title="Permalink to this definition"></a></dt>
+<dd><p>A mock discord object representing a <code class="xref py py-class docutils literal notranslate"><span class="pre">discord.Guild</span></code> object.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should never instantiate a <a class="reference internal" href="#discord_objects.Guild" title="discord_objects.Guild"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.Guild</span></code></a> object manually. Instead, you should use the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">accord.create_guild()</span></code> method.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.Guild.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#discord_objects.Guild.name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the guild</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="discord_objects.Guild.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#discord_objects.Guild.as_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the guild in dictionary format resembling the guild data sent by discord.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dict of the guild data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="discord_objects.Member">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">discord_objects.</span></span><span class="sig-name descname"><span class="pre">Member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guild</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#discord_objects.Guild" title="discord_objects.Guild"><span class="pre">Guild</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#discord_objects.User" title="discord_objects.User"><span class="pre">User</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#discord_objects.Member" title="Permalink to this definition"></a></dt>
+<dd><p>A mock discord object representing a <code class="xref py py-class docutils literal notranslate"><span class="pre">discord.Member</span></code> object.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should never instantiate a <a class="reference internal" href="#discord_objects.Member" title="discord_objects.Member"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.Member</span></code></a> object manually. The library creates members
+automatically when a user is used with a guild that the user is not currently a member of.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.Member.guild">
+<span class="sig-name descname"><span class="pre">guild</span></span><a class="headerlink" href="#discord_objects.Member.guild" title="Permalink to this definition"></a></dt>
+<dd><p>The guild the user is the member of</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.Member.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#discord_objects.Member.user" title="Permalink to this definition"></a></dt>
+<dd><p>The user that is the member of the guild</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="discord_objects.Message">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">discord_objects.</span></span><span class="sig-name descname"><span class="pre">Message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#discord_objects.TextChannel" title="discord_objects.TextChannel"><span class="pre">TextChannel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#discord_objects.Member" title="discord_objects.Member"><span class="pre">Member</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#discord_objects.Message" title="Permalink to this definition"></a></dt>
+<dd><p>A mock discord object representing a <code class="xref py py-class docutils literal notranslate"><span class="pre">discord.Message</span></code> object.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<dl class="simple">
+<dt>You should create instantiate a <a class="reference internal" href="#discord_objects.Message" title="discord_objects.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.Message</span></code></a> object. The library creates messages</dt><dd><p>accordingly as a part of it’s functionality</p>
+</dd>
+</dl>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.Message.text_channel">
+<span class="sig-name descname"><span class="pre">text_channel</span></span><a class="headerlink" href="#discord_objects.Message.text_channel" title="Permalink to this definition"></a></dt>
+<dd><p>The text channel the message belongs to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.Message.author">
+<span class="sig-name descname"><span class="pre">author</span></span><a class="headerlink" href="#discord_objects.Message.author" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the text channel</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.Message.interaction">
+<span class="sig-name descname"><span class="pre">interaction</span></span><a class="headerlink" href="#discord_objects.Message.interaction" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">discord.py</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">Interaction</span></code> associated with the message if any. <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> otherwise</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="discord_objects.TextChannel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">discord_objects.</span></span><span class="sig-name descname"><span class="pre">TextChannel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guild</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#discord_objects.Guild" title="discord_objects.Guild"><span class="pre">Guild</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#discord_objects.TextChannel" title="Permalink to this definition"></a></dt>
+<dd><p>A mock discord object representing a <code class="xref py py-class docutils literal notranslate"><span class="pre">discord.TextChannel</span></code> object.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should never instantiate a <a class="reference internal" href="#discord_objects.TextChannel" title="discord_objects.TextChannel"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.TextChannel</span></code></a> object manually. Instead, you should use the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">accord.create_text_channel()</span></code> method.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.TextChannel.guild">
+<span class="sig-name descname"><span class="pre">guild</span></span><a class="headerlink" href="#discord_objects.TextChannel.guild" title="Permalink to this definition"></a></dt>
+<dd><p>The guild the text channel belongs to</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.TextChannel.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#discord_objects.TextChannel.name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the text channel</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="discord_objects.User">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">discord_objects.</span></span><span class="sig-name descname"><span class="pre">User</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avatar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discriminator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#discord_objects.User" title="Permalink to this definition"></a></dt>
+<dd><p>A mock discord object representing a <code class="xref py py-class docutils literal notranslate"><span class="pre">discord.User</span></code> object.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should never instantiate a <a class="reference internal" href="#discord_objects.User" title="discord_objects.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">discord_objects.User</span></code></a> object manually. Instead, you should use the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">accord.create_user()</span></code> method.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.User.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#discord_objects.User.name" title="Permalink to this definition"></a></dt>
+<dd><p>The username of the user</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.User.avatar">
+<span class="sig-name descname"><span class="pre">avatar</span></span><a class="headerlink" href="#discord_objects.User.avatar" title="Permalink to this definition"></a></dt>
+<dd><p>The avatar url of the user</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="discord_objects.User.discriminator">
+<span class="sig-name descname"><span class="pre">discriminator</span></span><a class="headerlink" href="#discord_objects.User.discriminator" title="Permalink to this definition"></a></dt>
+<dd><p>The discriminator of the user. NOTE: we’ll have to see how long this lasts</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="discord_objects.User.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#discord_objects.User.as_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the user in dictionary format resembling the user data sent by discord.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dict of the user data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="accord.html" class="btn btn-neutral float-left" title="API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="engine.html" class="btn btn-neutral float-left" title="API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="embed_helpers.html" class="btn btn-neutral float-right" title="Embed verification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
