@@ -94,7 +94,10 @@ class User(DiscordObject):
             "id": self.id,
             "username": self.name,
             "discriminator": self.discriminator,
-            "avatar": self.avatar
+            "avatar": {
+                "url": self.avatar.url,
+                "key": self.avatar.key
+            }
         }
 
 
@@ -115,6 +118,16 @@ class Member(DiscordObject):
         self.guild: Guild = guild
         self.user: User = user
 
+    def as_dict(self) -> dict:
+        """Gets the member in dictionary format resembling the member data sent by discord.
+
+        Returns:
+            A dict of the member data
+        """
+        return {
+            "user": self.user.as_dict()
+        }
+
 
 class TextChannel(DiscordObject):
     """A mock discord object representing a :class:`discord.TextChannel` object.
@@ -132,6 +145,17 @@ class TextChannel(DiscordObject):
         super().__init__()
         self.guild: Guild = guild
         self.name: str = name if name is not None else f"Text channel {self.id}"
+
+    def as_dict(self) -> dict:
+        """Gets the text channel in dictionary format resembling the channel data sent by discord.
+
+        Returns:
+            A dict of the channel data
+        """
+        return {
+            "id": self.id,
+            "guild_id": self.guild.id
+        }
 
 
 class Message(DiscordObject):

@@ -1,9 +1,12 @@
+import pytest
+
 import accord
 
 
 # noinspection PyMethodMayBeStatic
 class BasicAppCommandFeatures:
 
+    @pytest.mark.wip
     async def should_see_command_response_text(self, accord_engine: accord.Engine):
         await accord_engine.app_command("ping")
 

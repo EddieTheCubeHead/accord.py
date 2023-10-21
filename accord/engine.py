@@ -4,13 +4,16 @@ import asyncio
 import inspect
 import typing
 from enum import Enum
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock, patch
 
 # discord.py wants to be listed as discord.py in requirements, but also wants to be imported as discord
 # noinspection PyPackageRequirements
 import discord
+from discord.gateway import DiscordWebSocket
 
 import discord_objects
+from discord_messages import create_app_command_message
+from request_catcher import RequestCatcher
 
 guild: discord_objects.Guild = discord_objects.Guild()
 """The default mock guild used for operations with engine.py"""
@@ -355,6 +358,9 @@ async def create_engine(client: discord.Client, command_tree: discord.app_comman
         An engine instance that can be used to run commands or events on the client
     """
     engine = Engine(client, command_tree)
+    client.ws = DiscordWebSocket(Mock(), loop=client.loop)
+    client.ws.shard_id = client.shard_id
+    client.ws._discord_parsers = client._connection.parsers
     await engine.client._async_setup_hook()
     await engine.client.setup_hook()
     _insert_objects(client)
@@ -394,6 +400,7 @@ class Engine:
         self.client: discord.Client = client
         command_tree.sync = AsyncMock()
         self.command_tree: discord.app_commands.CommandTree | None = command_tree
+        self.response_catcher = RequestCatcher()
         self._all_responses: list[Response] = []
 
     @property
@@ -429,11 +436,14 @@ class Engine:
         command_guild = _get_command_guild(command_guild)
         issuer = _get_command_issuer(command_guild, issuer)
         command_channel = _get_command_channel(command_guild, channel)
-        interaction = _create_command_interaction(self, command_guild, issuer, command_channel, command_name,
-                                                  *args, **kwargs)
-        self.command_tree._from_interaction(interaction)
-        self.client._connection.dispatch('interaction', interaction)
-        await asyncio.sleep(0)
+        # interaction = _create_command_interaction(self, command_guild, issuer, command_channel, command_name,
+        #                                           *args, **kwargs)
+        # self.command_tree._from_interaction(interaction)
+        # self.client._connection.dispatch('interaction', interaction)
+        with patch("discord.webhook.async_.AsyncWebhookAdapter.request", new_callable=self.response_catcher):
+            await self.client.ws.received_message(create_app_command_message(command_name, command_guild, issuer,
+                                                                             command_channel))
+            await asyncio.sleep(0)
 
     def get_response(self, index: int) -> Response:
         """A method for getting a :obj:`Response` in the specified index
