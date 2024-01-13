@@ -1,7 +1,8 @@
 from enum import Enum
 from json import dumps
+from typing import Any
 
-from discord_objects import Member, TextChannel, Guild
+from accord.discord_objects import Member, TextChannel, Guild
 
 
 class MessageEvent(Enum):
@@ -37,12 +38,14 @@ def _create_event_message(event: MessageEvent, operation: DiscordOperation, data
     })
 
 
-def create_app_command_message(command_name: str, guild: Guild, member: Member, channel: TextChannel) -> str:
+def create_app_command_message(command_name: str, guild: Guild, member: Member, channel: TextChannel, **kwargs)\
+        -> str:
     data = {
         "member": member.as_dict(),
         "guild": guild.as_dict(),
         "data": {
-            "name": command_name
+            "name": command_name,
+            "options": [create_app_command_option(name, data) for name, data in kwargs.items()]
         },
         "channel_id": channel.id,
         "channel": channel.as_dict(),
@@ -53,3 +56,20 @@ def create_app_command_message(command_name: str, guild: Guild, member: Member, 
         "application_id": 1
     }
     return _create_event_message(MessageEvent.INTERACTION_CREATE, DiscordOperation.DISPATCH, data)
+
+
+def create_app_command_option(name: str, data: Any) -> {str: Any}:
+    return {
+        "name": name,
+        "type": get_app_command_option_type(data),
+        "value": data
+    }
+
+
+def get_app_command_option_type(data: Any):
+    if type(data) is str:
+        return 3
+    elif type(data) is int:
+        return 4
+    elif type(data) is bool:
+        return 5

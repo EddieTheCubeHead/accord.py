@@ -4,16 +4,16 @@ import asyncio
 import inspect
 import typing
 from enum import Enum
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, Mock, patch, MagicMock
 
 # discord.py wants to be listed as discord.py in requirements, but also wants to be imported as discord
 # noinspection PyPackageRequirements
 import discord
 from discord.gateway import DiscordWebSocket
 
-import discord_objects
-from discord_messages import create_app_command_message
-from request_catcher import RequestCatcher
+import accord.discord_objects as discord_objects
+from accord.discord_messages import create_app_command_message
+from accord.request_catcher import RequestCatcher
 
 guild: discord_objects.Guild = discord_objects.Guild()
 """The default mock guild used for operations with engine.py"""
@@ -143,10 +143,10 @@ class _InteractionType(Enum):
 # noinspection PyProtectedMember
 class Response:
     """A class representing an interaction response sent by the client under testing
-    
+
     Caution:
         You should not instantiate :class:`accord.Response` yourself.
-        
+
     Attributes:
         content: The content of the message
         ephemeral: Whether the response is only visible to the user who caused the interaction
@@ -155,7 +155,7 @@ class Response:
         embed: The :obj:`discord.Embed` associated with the response, if any
     """
 
-    def __init__(self, engine: Engine, message: discord_objects.Message, content: str | None, *, 
+    def __init__(self, engine: Engine, message: discord_objects.Message, content: str | None, *,
                  ephemeral: bool = False, view: discord.ui.View = None, modal: discord.ui.Modal = None,
                  embed: discord.Embed = None):
         self._engine = engine
@@ -165,11 +165,11 @@ class Response:
         self.view = view
         self.modal = modal
         self.embed = embed
-        
+
     @property
     def button(self) -> discord.ui.Button | None:
         """A property returning the *first* button of the view associated with the response, if available
-        
+
         Attention:
             Returns :obj:`None` if response has no view or the view has no buttons.
         """
@@ -177,7 +177,7 @@ class Response:
 
     async def activate_button(self, button: str | int = 0):
         """A coroutine to activate (click) a button on the view associated with the response.
-        
+
         Args:
             button: The index or label of the button to activate. Defaults to ``0``
         """
@@ -187,10 +187,10 @@ class Response:
         interaction = _create_component_interaction(self._engine, 3, self._message, to_activate.custom_id)
         self._engine.client._connection._view_store.dispatch_view(2, to_activate.custom_id, interaction)
         await asyncio.sleep(0)
-        
+
     def get_button(self, button: str | int = 0) -> discord.ui.Button | None:
         """A method to get a button from the view
-        
+
         Args:
             button: The index or label of the button to get. Defaults to ``0``
 
@@ -208,17 +208,17 @@ class Response:
                 found_button = item
                 break
         return found_button
-    
+
     def modal_input(self, modal_field: str, value: typing.Any) -> Response:
         """A method to send input to a text input field in a modal associated with the response.
-        
+
         Attention:
             Does nothing if the specified field is not found in the modal
-            
+
         Args:
             modal_field: the name of the field that should be filled with the given value
             value: The value to be set to the given field
-            
+
         Returns:
             Returns the :obj:`accord.Response` for chaining
         """
@@ -232,7 +232,7 @@ class Response:
                 inner_field._value = value
                 break
         return self
-    
+
     async def submit_modal(self):
         """A coroutine that submits the modal associated with the response."""
         modal = self.modal
@@ -406,9 +406,9 @@ class Engine:
     @property
     def response(self) -> Response:
         """A property representing the newest response sent by the client"""
-        return self._all_responses[-1]
+        return self.response_catcher.get_response(-1)
 
-    async def app_command(self, command_name: str, *args,
+    async def app_command(self, command_name: str,
                           command_guild: int | discord_objects.Guild = None,
                           issuer: int | discord_objects.User = None,
                           channel: int | discord_objects.TextChannel = None, **kwargs):
@@ -436,13 +436,9 @@ class Engine:
         command_guild = _get_command_guild(command_guild)
         issuer = _get_command_issuer(command_guild, issuer)
         command_channel = _get_command_channel(command_guild, channel)
-        # interaction = _create_command_interaction(self, command_guild, issuer, command_channel, command_name,
-        #                                           *args, **kwargs)
-        # self.command_tree._from_interaction(interaction)
-        # self.client._connection.dispatch('interaction', interaction)
-        with patch("discord.webhook.async_.AsyncWebhookAdapter.request", new_callable=self.response_catcher):
+        with patch("discord.webhook.async_.AsyncWebhookAdapter.request", new=self.response_catcher):
             await self.client.ws.received_message(create_app_command_message(command_name, command_guild, issuer,
-                                                                             command_channel))
+                                                                             command_channel, **kwargs))
             await asyncio.sleep(0)
 
     def get_response(self, index: int) -> Response:
@@ -454,11 +450,11 @@ class Engine:
         Returns:
             The :obj:`Response` in the specified index.
         """
-        return self._all_responses[index]
+        return self.response_catcher.get_response(index)
 
     def clear_responses(self):
         """A method for clearing the response list"""
-        self._all_responses.clear()
+        self.response_catcher.clear_responses()
         
         
 def _get_discord_object_id(discord_object: discord_objects.DiscordObject | int) -> int:
